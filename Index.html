@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>POCKET AQUA DX 1996 ★ ポケットアクア DX</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --pixel-font: 'Press Start 2P', monospace;
+      --ui-font: 'Rubik', sans-serif;
+      --bg-dark: #07060c;
+      --app-w: 460px;
+      --nes-gold: #ffd214;
+      --nes-cyan: #00f5d4;
+      --nes-pink: #ff007f;
+      --nes-blue: #2563eb;
+      --nes-red: #e11d48;
+      --safe-bottom: env(safe-area-inset-bottom, 12px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      image-rendering: pixelated;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #040307;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: var(--ui-font);
+    }
+
+    /* Оболочка приложения: смартфон на ПК / на весь экран на телефоне */
+    .app-viewport {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: var(--app-w);
+      max-height: 940px;
+      background: #0d0a14;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), 0 0 0 8px #1c1829;
+    }
+
+    @media (max-width: 500px) {
+      .app-viewport {
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 0;
+        box-shadow: none;
+      }
+    }
+    @media (min-width: 501px) {
+      .app-viewport {
+        border-radius: 36px;
+      }
+    }
+
+    /* Верхний статус-бар приложения */
+    .app-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 25;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(180deg, rgba(7, 6, 12, 0.95) 0%, rgba(7, 6, 12, 0.6) 80%, transparent 100%);
+      pointer-events: auto;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .level-badge {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #fff;
+      font-family: var(--pixel-font);
+      font-size: 8px;
+      padding: 5px 8px;
+      border-radius: 8px;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 0 #000;
+    }
+
+    .currencies {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pill-currency {
+      background: rgba(0, 0, 0, 0.65);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      padding: 4px 10px;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      backdrop-filter: blur(8px);
+    }
+
+    .pill-currency.gem {
+      border-color: var(--nes-cyan);
+      box-shadow: 0 0 8px rgba(0, 245, 212, 0.3);
+    }
+
+    /* ЭЛТ Экран аквариума */
+    .screen-area {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000b1a;
+    }
+
+    #aquarium {
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+    }
+
+    /* Сканлайны и затемнение */
+    .crt-scanlines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+    }
+
+    #dirt-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      background: #2b3a0b;
+      mix-blend-mode: multiply;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease;
+    }
+
+    /* Плавающие показатели питомца (Тамагочи HUD) */
+    .vitals-pill {
+      position: absolute;
+      top: 64px;
+      left: 14px;
+      right: 14px;
+      z-index: 10;
+      background: rgba(8, 10, 24, 0.75);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .vital-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .vital-title {
+      font-size: 8px;
+      font-family: var(--pixel-font);
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .v-bar {
+      height: 6px;
+      background: #1e1b2e;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .v-fill {
+      height: 100%;
+      width: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    /* Быстрые плавающие кнопки действий */
+    .quick-actions {
+      position: absolute;
+      right: 14px;
+      bottom: 84px;
+      z-index: 15;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .fab-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #181424;
+      border: 3px solid #fff;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6), 3px 3px 0 #000;
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .fab-btn:active {
+      transform: scale(0.92) translate(2px, 2px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.6);
+    }
+
+    .fab-label {
+      font-family: var(--pixel-font);
+      font-size: 6px;
+      margin-top: 2px;
+    }
+
+    /* Всплывающее уведомление */
+    .toast-msg {
+      position: absolute;
+      bottom: 90px;
+      left: 16px;
+      right: 80px;
+      z-index: 15;
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid var(--nes-cyan);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+      border-radius: 12px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 10px;
+      line-height: 1.5;
+      font-family: var(--pixel-font);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+    }
+
+    .toast-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Нижний навигационный таб-бар */
+    .bottom-dock {
+      width: 100%;
+      background: #0d0a17;
+      border-top: 2px solid rgba(255, 255, 255, 0.15);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 8px 10px calc(8px + var(--safe-bottom));
+      z-index: 25;
+    }
+
+    .dock-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      color: #8b859e;
+      cursor: pointer;
+      font-size: 8px;
+      font-family: var(--pixel-font);
+      padding: 4px 8px;
+      transition: color 0.2s;
+    }
+
+    .dock-tab.active, .dock-tab:hover {
+      color: var(--nes-cyan);
+    }
+
+    .dock-icon {
+      font-size: 18px;
+    }
+
+    /* Модальные окна (шторки снизу) */
+    .bottom-sheet {
+      position: absolute;
+      inset: 0;
+      z-index: 40;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .bottom-sheet.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sheet-card {
+      background: #141122;
+      border-top: 4px solid #fff;
+      border-radius: 26px 26px 0 0;
+      max-height: 82%;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 18px calc(16px + var(--safe-bottom));
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
+      transform: translateY(100%);
+      transition: transform 0.28s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+
+    .bottom-sheet.open .sheet-card {
+      transform: translateY(0);
+    }
+
+    .sheet-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .sheet-title {
+      font-family: var(--pixel-font);
+      font-size: 13px;
+      color: var(--nes-gold);
+    }
+
+    .sheet-close {
+      background: #252036;
+      border: 2px solid #fff;
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .sheet-scroll {
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-right: 4px;
+    }
+
+    /* Карточки Доната и Товаров */
+    .shop-item {
+      background: #1d182e;
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .shop-item.vip {
+      border: 2px solid var(--nes-gold);
+      background: linear-gradient(135deg, #1c1430, #2b1d42);
+      box-shadow: 0 0 15px rgba(255, 210, 20, 0.2);
+    }
+
+    .item-info h4 {
+      font-family: var(--pixel-font);
+      font-size: 10px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .item-info p {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .btn-buy {
+      background: linear-gradient(135deg, var(--nes-pink), #c026d3);
+      color: #fff;
+      border: 2px solid #fff;
+      box-shadow: 2px 2px 0 #000;
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-family: var(--pixel-font);
+      font-size: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-buy:active {
+      transform: translate(2px, 2px);
+      box-shadow: none;
+    }
+
+    .btn-buy.coin-btn {
+      background: linear-gradient(135deg, #d97706, #f59e0b);
+    }
+
+    .btn-buy.equipped {
+      background: #10b981;
+      border-color: #a7f3d0;
+    }
+
+    /* Модалка входа */
+    .auth-fullscreen {
+      position: absolute;
+      inset: 0;
+      z-index: 100;
+      background: #090614;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .app-logo {
+      font-family: var(--pixel-font);
+      font-size: 17px;
+      color: var(--nes-gold);
+      margin-bottom: 6px;
+      text-shadow: 3px 3px 0 var(--nes-pink);
+    }
+
+    .app-tag {
+      font-family: var(--pixel-font);
+      font-size: 8px;
+      color: var(--nes-cyan);
+      margin-bottom: 30px;
+    }
+
+    .retro-input {
+      width: 100%;
+      max-width: 280px;
+      background: #000;
+      border: 2px solid #fff;
+      color: #38ef7d;
+      font-family: var(--pixel-font);
+      font-size: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+      outline: none;
+      border-radius: 8px;
+    }
+
+    .btn-start {
+      width: 100%;
+      max-width: 280px;
+      background: var(--nes-red);
+      color: #fff;
+      border: 3px solid #fff;
+      box-shadow: 4px 4px 0 #000;
+      padding: 14px;
+      font-family: var(--pixel-font);
+      font-size: 11px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Оболочка мобильного/десктопного приложения -->
+  <div class="app-viewport">
+
+    <!-- Верхний статус-бар -->
+    <header class="app-header" id="app-header" style="display: none;">
+      <div class="user-profile">
+        <div class="level-badge" id="hud-level">LV.1</div>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <span style="color:#fff; font-size:11px; font-weight:700;" id="hud-name">Player</span>
+          <div style="width:70px; height:4px; background:#222; border-radius:2px; overflow:hidden;">
+            <div id="hud-xp-bar" style="width:20%; height:100%; background:var(--nes-cyan);"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="currencies">
+        <div class="pill-currency">
+          <span>🪙</span>
+          <span id="hud-coins">150</span>
+        </div>
+        <div class="pill-currency gem" onclick="openSheet('shop')">
+          <span>💎</span>
+          <span id="hud-gems">20</span>
+          <span style="color:var(--nes-gold); font-size:12px; margin-left:2px;">+</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Основной игровой экран аквариума -->
+    <main class="screen-area">
+      <div class="crt-scanlines"></div>
+      <div id="dirt-layer"></div>
+
+      <!-- Внутренний канвас -->
+      <canvas id="aquarium" width="460" height="740"></canvas>
+
+      <!-- Индикаторы состояния питомца -->
+      <div class="vitals-pill" id="vitals-pill" style="display: none;">
+        <div class="vital-col">
+          <div class="vital-title"><span>СЫТОСТЬ</span><span id="txt-hunger">100%</span></div>
+          <div class="v-bar"><div class="v-fill" id="bar-hunger" style="background:#ffd214;"></div></div>
+        </div>
+        <div class="vital-col">
+          <div class="vital-title"><span>ВОДА</span><span id="txt-clean">100%</span></div>
+          <div class="v-bar"><div class="v-fill" id="bar-clean" style="background:#00f5d4;"></div></div>
+        </div>
+        <div class="vital-col">
+          <div class="vital-title"><span>РАДОСТЬ</span><span id="txt-happy">100%</span></div>
+          <div class="v-bar"><div class="v-fill" id="bar-happy" style="background:#ff007f;"></div></div>
+        </div>
+      </div>
+
+      <!-- Всплывающий тост -->
+      <div class="toast-msg" id="toast">Погладьте рыбку пальцем!</div>
+
+      <!-- Плавающие быстрые действия -->
+      <div class="quick-actions" id="quick-actions" style="display: none;">
+        <button class="fab-btn" onclick="userAction('feed')" title="Кормить">
+          <span>🍞</span>
+          <span class="fab-label">ЕДА</span>
+        </button>
+        <button class="fab-btn" onclick="userAction('clean')" title="Чистить">
+          <span>🧽</span>
+          <span class="fab-label">ВОДА</span>
+        </button>
+        <button class="fab-btn" onclick="userAction('pet')" title="Погладить">
+          <span>💖</span>
+          <span class="fab-label">ЛАСТИТЬ</span>
+        </button>
+      </div>
+    </main>
+
+    <!-- Нижняя мобильная навигация (Dock) -->
+    <nav class="bottom-dock" id="bottom-dock" style="display: none;">
+      <button class="dock-tab active" onclick="switchTab('aqua')">
+        <span class="dock-icon">🐟</span>
+        <span>АКВА</span>
+      </button>
+      <button class="dock-tab" onclick="openSheet('shop')">
+        <span class="dock-icon">💎</span>
+        <span>ДОНАТ/ШОП</span>
+      </button>
+      <button class="dock-tab" onclick="openSheet('decor')">
+        <span class="dock-icon">🎨</span>
+        <span>ДЕКОР</span>
+      </button>
+      <button class="dock-tab" onclick="openSheet('quests')">
+        <span class="dock-icon">🏆</span>
+        <span>КВЕСТЫ</span>
+      </button>
+    </nav>
+
+    <!-- ШТОРКА 1: МАГАЗИН И ДОНАТ -->
+    <div class="bottom-sheet" id="sheet-shop">
+      <div class="sheet-card">
+        <div class="sheet-head">
+          <div class="sheet-title">💎 МАГАЗИН & ДОНАТ</div>
+          <button class="sheet-close" onclick="closeSheet('shop')">✕</button>
+        </div>
+        <div class="sheet-scroll">
+
+          <div style="font-size:9px; font-family:var(--pixel-font); color:var(--nes-cyan); margin:6px 0;">ПОДДЕРЖКА / ДОНАТ:</div>
+
+          <div class="shop-item vip">
+            <div class="item-info">
+              <h4>☕ ЧАШКА КОФЕ</h4>
+              <p>+100 💎 Жемчужин • Респект автору</p>
+            </div>
+            <button class="btn-buy" onclick="simulateDonate('Кофе автору', 99, 100)">99 ₽</button>
+          </div>
+
+          <div class="shop-item vip">
+            <div class="item-info">
+              <h4>👑 КОРОЛЕВСКИЙ VIP</h4>
+              <p>+500 💎 • Скин «Золотой Дракон»</p>
+            </div>
+            <button class="btn-buy" onclick="simulateDonate('VIP Набор', 299, 500)">299 ₽</button>
+          </div>
+
+          <div style="font-size:9px; font-family:var(--pixel-font); color:var(--nes-gold); margin:12px 0 6px;">СКИHЫ ПЕТУШКА:</div>
+
+          <div class="shop-item">
+            <div class="item-info">
+              <h4>🌸 САКУРА-НЕОН</h4>
+              <p>Розово-бирюзовый шелковый веер</p>
+            </div>
+            <button class="btn-buy" id="btn-skin-sakura" onclick="buySkin('sakura', 80)">80 💎</button>
+          </div>
+
+          <div class="shop-item">
+            <div class="item-info">
+              <h4>🥷 ЧЕРНЫЙ САМУРАЙ</h4>
+              <p>Тёмно-стальной окрас с алыми лучами</p>
+            </div>
+            <button class="btn-buy" id="btn-skin-samurai" onclick="buySkin('samurai', 120)">120 💎</button>
+          </div>
+
+          <div style="font-size:9px; font-family:var(--pixel-font); color:#38ef7d; margin:12px 0 6px;">ГАДЖЕТЫ:</div>
+
+          <div class="shop-item">
+            <div class="item-info">
+              <h4>🤖 АВТОКОРМУШКА</h4>
+              <p>Сытость не опускается ниже 50%</p>
+            </div>
+            <button class="btn-buy coin-btn" id="btn-gadget-feeder" onclick="buyGadget('feeder', 300)">300 🪙</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ШТОРКА 2: ДЕКОР И ФОНЫ -->
+    <div class="bottom-sheet" id="sheet-decor">
+      <div class="sheet-card">
+        <div class="sheet-head">
+          <div class="sheet-title">🎨 ДЕКОР АКВАРИУМА</div>
+          <button class="sheet-close" onclick="closeSheet('decor')">✕</button>
+        </div>
+        <div class="sheet-scroll">
+          <div class="shop-item">
+            <div class="item-info">
+              <h4>⛩️ ВОРОТА ТОРИИ</h4>
+              <p>Традиционный декор на дне</p>
+            </div>
+            <button class="btn-buy coin-btn" id="btn-decor-torii" onclick="toggleDecor('torii', 150)">150 🪙</button>
+          </div>
+
+          <div class="shop-item">
+            <div class="item-info">
+              <h4>🔮 НЕОНОВЫЙ КРИСТАЛЛ</h4>
+              <p>Мягко светится и пускает пузыри</p>
+            </div>
+            <button class="btn-buy coin-btn" id="btn-decor-crystal" onclick="toggleDecor('crystal', 200)">200 🪙</button>
+          </div>
+
+          <div class="shop-item">
+            <div class="item-info">
+              <h4>🌆 ТЕМА: ТОКИО 1996</h4>
+              <p>Неоновый ночной градиент</p>
+            </div>
+            <button class="btn-buy coin-btn" onclick="setTheme('tokyo')">ВЫБРАТЬ</button>
+          </div>
+
+          <div class="shop-item">
+            <div class="item-info">
+              <h4>🌊 ТЕМА: ГЛУБОКИЙ ОКЕАН</h4>
+              <p>Классический сапфировый вид</p>
+            </div>
+            <button class="btn-buy coin-btn" onclick="setTheme('deep')">ВЫБРАТЬ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ШТОРКА 3: КВЕСТЫ -->
+    <div class="bottom-sheet" id="sheet-quests">
+      <div class="sheet-card">
+        <div class="sheet-head">
+          <div class="sheet-title">🏆 ДОСТИЖЕНИЯ И КВЕСТЫ</div>
+          <button class="sheet-close" onclick="closeSheet('quests')">✕</button>
+        </div>
+        <div class="sheet-scroll">
+          <div class="shop-item">
+            <div class="item-info">
+              <h4>🎁 ЕЖЕДНЕВНЫЙ БОНУС</h4>
+              <p>Заходи каждый день за наградой</p>
+            </div>
+            <button class="btn-buy coin-btn" id="btn-daily" onclick="claimDaily()">+50 🪙</button>
+          </div>
+
+          <div class="shop-item">
+            <div class="item-info">
+              <h4>💖 ЗАБОТЛИВЫЙ ХОЗЯИН</h4>
+              <p>Погладить рыбку 5 раз</p>
+            </div>
+            <span style="font-size:10px; font-family:var(--pixel-font); color:#38ef7d;" id="quest-pets-txt">0/5</span>
+          </div>
+
+          <div class="shop-item">
+            <div class="item-info">
+              <h4>👑 ЗВАНИЕ: СУПЕР-БЕТТА</h4>
+              <p>Достигните 5-го уровня</p>
+            </div>
+            <span style="font-size:10px; font-family:var(--pixel-font); color:var(--nes-gold);">LV.5 НАГРАДА: 50 💎</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Экран первичного входа / Регистрации -->
+    <div class="auth-fullscreen" id="auth-screen">
+      <div class="app-logo">POCKET AQUA DX</div>
+      <div class="app-tag">-- ポケットアクア '96 MOBILE --</div>
+      <input type="text" class="retro-input" id="auth-input-name" placeholder="ВАШЕ ИМЯ" maxlength="12">
+      <button class="btn-start" onclick="handleStartApp()">НАЧАТЬ [START]</button>
+    </div>
+
+  </div>
+
+  <script>
+    /* =====================================================================
+       1. 8-BIT ЗВУКИ (CHIPTUNE)
+       ===================================================================== */
+    const A = new (window.AudioContext || window.webkitAudioContext)();
+    function sfx(freq, type = 'square', dur = 0.1, vol = 0.05) {
+      if (A.state === 'suspended') A.resume();
+      try {
+        const osc = A.createOscillator();
+        const gain = A.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, A.currentTime);
+        gain.gain.setValueAtTime(vol, A.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, A.currentTime + dur);
+        osc.connect(gain);
+        gain.connect(A.destination);
+        osc.start();
+        osc.stop(A.currentTime + dur);
+      } catch(e){}
+    }
+
+    const sound = {
+      pop: () => sfx(650, 'triangle', 0.05, 0.07),
+      eat: () => { sfx(520, 'triangle', 0.07); setTimeout(() => sfx(840, 'triangle', 0.09), 60); },
+      coin: () => { sfx(987, 'square', 0.08); setTimeout(() => sfx(1318, 'square', 0.14), 70); },
+      gem: () => { [523, 659, 783, 1046, 1318].forEach((f, i) => setTimeout(() => sfx(f, 'square', 0.1, 0.04), i * 50)); },
+      heart: () => sfx(440, 'sine', 0.15, 0.08)
+    };
+
+    /* =====================================================================
+       2. ДАННЫЕ ИГРОКА, ЭКОНОМИКА И ТАМАГОЧИ
+       ===================================================================== */
+    let player = {
+      name: 'Player',
+      level: 1,
+      xp: 0,
+      coins: 100,
+      gems: 30,
+      skin: 'classic',
+      theme: 'deep',
+      gadgets: { feeder: false },
+      decor: { torii: false, crystal: false },
+      petCount: 0,
+      lastDaily: 0
+    };
+
+    let pet = {
+      hunger: 100,
+      cleanliness: 100,
+      happiness: 100,
+      lastTick: Date.now()
+    };
+
+    function loadGame(name) {
+      const data = localStorage.getItem('pocket_aqua_dx_' + name);
+      if (data) {
+        const parsed = JSON.parse(data);
+        player = parsed.player;
+        pet = parsed.pet;
+      } else {
+        player.name = name;
+      }
+      updateHUD();
+    }
+
+    function saveGame() {
+      if (!player.name) return;
+      localStorage.setItem('pocket_aqua_dx_' + player.name, JSON.stringify({ player, pet }));
+    }
+
+    function addXP(amount) {
+      player.xp += amount;
+      if (player.xp >= player.level * 50) {
+        player.xp = 0;
+        player.level++;
+        player.gems += 15;
+        sound.gem();
+        toast(`НОВЫЙ УРОВЕНЬ! LV.${player.level} (+15 💎)`);
+      }
+      updateHUD();
+      saveGame();
+    }
+
+    function updateHUD() {
+      document.getElementById('hud-name').innerText = player.name;
+      document.getElementById('hud-level').innerText = `LV.${player.level}`;
+      document.getElementById('hud-coins').innerText = player.coins;
+      document.getElementById('hud-gems').innerText = player.gems;
+
+      const xpPct = Math.min(100, (player.xp / (player.level * 50)) * 100);
+      document.getElementById('hud-xp-bar').style.width = `${xpPct}%`;
+
+      document.getElementById('txt-hunger').innerText = `${Math.round(pet.hunger)}%`;
+      document.getElementById('txt-clean').innerText = `${Math.round(pet.cleanliness)}%`;
+      document.getElementById('txt-happy').innerText = `${Math.round(pet.happiness)}%`;
+
+      document.getElementById('bar-hunger').style.width = `${pet.hunger}%`;
+      document.getElementById('bar-clean').style.width = `${pet.cleanliness}%`;
+      document.getElementById('bar-happy').style.width = `${pet.happiness}%`;
+
+      document.getElementById('dirt-layer').style.opacity = ((100 - pet.cleanliness) / 100) * 0.75;
+      document.getElementById('quest-pets-txt').innerText = `${Math.min(5, player.petCount)}/5`;
+    }
+
+    // Цикл деградации статов и автокормушки
+    setInterval(() => {
+      pet.hunger = Math.max(0, pet.hunger - 0.25);
+      pet.cleanliness = Math.max(0, pet.cleanliness - 0.18);
+      pet.happiness = Math.max(0, pet.happiness - 0.2);
+
+      // Работа купленной автокормушки
+      if (player.gadgets.feeder && pet.hunger < 50) {
+        pet.hunger = 80;
+        toast('🤖 Автокормушка покормила петушка!');
+      }
+
+      updateHUD();
+      saveGame();
+    }, 2000);
+
+    /* =====================================================================
+       3. ДЕЙСТВИЯ, МАГАЗИН И СИМУЛЯЦИЯ ДОНАТА
+       ===================================================================== */
+    function userAction(act) {
+      if (act === 'feed') {
+        if (pet.hunger >= 98) { toast('Петушок уже сыт!'); return; }
+        for (let i = 0; i < 3; i++) foods.push(new Food(betta.x + (Math.random() - 0.5) * 60, 20 + Math.random() * 20));
+        pet.hunger = Math.min(100, pet.hunger + 25);
+        player.coins += 5;
+        addXP(8);
+        sound.pop();
+        toast('Вы покормили рыбку! (+5 🪙)');
+      } else if (act === 'clean') {
+        pet.cleanliness = 100;
+        sound.pop();
+        player.coins += 10;
+        addXP(10);
+        toast('Аквариум сияет чистотой! (+10 🪙)');
+      } else if (act === 'pet') {
+        pet.happiness = Math.min(100, pet.happiness + 20);
+        player.petCount++;
+        betta.giveThrust(0.7);
+        addXP(6);
+        spawnHearts(betta.x, betta.y);
+        sound.heart();
+        toast('Петушок виляет хвостиком от ласки! 💖');
+      }
+      updateHUD();
+      saveGame();
+    }
+
+    // Донат (симуляция оплаты с мгновенной выдачей алмазов)
+    function simulateDonate(title, priceRub, gemsReward) {
+      sound.coin();
+      const confirmed = confirm(`💳 ПОДДЕРЖКА АВТОРА\n\nОформить пакет "${title}" за ${priceRub} ₽?\nВам будет начислено: +${gemsReward} 💎 Жемчужин!`);
+      if (confirmed) {
+        player.gems += gemsReward;
+        if (title.includes('VIP')) {
+          player.skin = 'gold';
+        }
+        sound.gem();
+        toast(`СПАСИБО ЗА ПОДДЕРЖКУ! Получено +${gemsReward} 💎`);
+        updateHUD();
+        saveGame();
+      }
+    }
+
+    function buySkin(skinId, costGems) {
+      if (player.skin === skinId) { toast('Этот скин уже надет!'); return; }
+      if (player.gems < costGems) { toast('Недостаточно 💎! Загляните в раздел доната.'); return; }
+      player.gems -= costGems;
+      player.skin = skinId;
+      sound.coin();
+      toast(`Скин применен! 🐟`);
+      updateHUD();
+      saveGame();
+    }
+
+    function buyGadget(gadgetId, costCoins) {
+      if (player.gadgets[gadgetId]) { toast('Уже куплено!'); return; }
+      if (player.coins < costCoins) { toast('Недостаточно 🪙 монет!'); return; }
+      player.coins -= costCoins;
+      player.gadgets[gadgetId] = true;
+      sound.coin();
+      toast('Автокормушка активирована!');
+      updateHUD();
+      saveGame();
+    }
+
+    function toggleDecor(id, cost) {
+      if (!player.decor[id]) {
+        if (player.coins < cost) { toast('Недостаточно 🪙!'); return; }
+        player.coins -= cost;
+        player.decor[id] = true;
+        sound.coin();
+        toast('Декорация установлена на дно!');
+      } else {
+        player.decor[id] = !player.decor[id];
+        toast(player.decor[id] ? 'Декор включен' : 'Декор убран');
+      }
+      updateHUD();
+      saveGame();
+    }
+
+    function setTheme(t) {
+      player.theme = t;
+      sound.pop();
+      toast('Тема оформлена!');
+      saveGame();
+    }
+
+    function claimDaily() {
+      const now = Date.now();
+      if (now - player.lastDaily < 24 * 3600 * 1000) {
+        toast('Вы уже забрали награду сегодня! Ждите завтра.');
+        return;
+      }
+      player.coins += 50;
+      player.lastDaily = now;
+      sound.coin();
+      toast('Получено +50 🪙 монет!');
+      updateHUD();
+      saveGame();
+    }
+
+    /* =====================================================================
+       4. UI ШТОРКИ И НАВИГАЦИЯ
+       ===================================================================== */
+    function openSheet(id) {
+      document.getElementById('sheet-' + id).classList.add('open');
+      sound.pop();
+    }
+
+    function closeSheet(id) {
+      document.getElementById('sheet-' + id).classList.remove('open');
+    }
+
+    function switchTab(tab) {
+      sound.pop();
+    }
+
+    function toast(txt) {
+      const el = document.getElementById('toast');
+      el.innerText = txt;
+      el.classList.add('show');
+      clearTimeout(window.tTimer);
+      window.tTimer = setTimeout(() => el.classList.remove('show'), 3200);
+    }
+
+    function handleStartApp() {
+      const name = document.getElementById('auth-input-name').value.trim() || 'Аквариумист';
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('app-header').style.display = 'flex';
+      document.getElementById('vitals-pill').style.display = 'flex';
+      document.getElementById('quick-actions').style.display = 'flex';
+      document.getElementById('bottom-dock').style.display = 'flex';
+      loadGame(name);
+      sound.gem();
+      toast(`Добро пожаловать, ${name}!`);
+    }
+
+    /* =====================================================================
+       5. КАНВАС ДВИЖОК: ПЕТУШОК, ДЕКОР И ЧАСТИЦЫ
+       ===================================================================== */
+    const canvas = document.getElementById('aquarium');
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+
+    // Частицы сердечек
+    const hearts = [];
+    function spawnHearts(x, y) {
+      for (let i = 0; i < 4; i++) {
+        hearts.push({ x, y, vy: -1.2 - Math.random(), alpha: 1 });
+      }
+    }
+
+    // Корм
+    const foods = [];
+    class Food {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.vy = 0.35 + Math.random() * 0.2;
+        this.eaten = false;
+      }
+      update() { this.y += this.vy; }
+      draw() {
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(Math.floor(this.x), Math.floor(this.y), 4, 3);
+      }
+    }
+
+    // Пузырьки
+    const bubbles = [];
+    for (let i = 0; i < 28; i++) {
+      bubbles.push({
+        x: Math.random() * 460,
+        y: Math.random() * 740,
+        speed: 0.3 + Math.random() * 0.5
+      });
+    }
+
+    // Грациозный петушок с поддержкой скинов
+    class MajesticBetta {
+      constructor() {
+        this.x = 230;
+        this.y = 350;
+        this.speed = 0.2;
+        this.angle = 0;
+        this.targetAngle = 0;
+        this.targetX = 230;
+        this.targetY = 350;
+        this.time = 0;
+        this.strokeCD = 0;
+      }
+
+      giveThrust(val = 0.8) {
+        this.speed = Math.min(1.8, this.speed + val);
+      }
+
+      update() {
+        this.time += 0.04;
+
+        // Поиск корма
+        let targetFood = null;
+        let minD = 9999;
+        for (let f of foods) {
+          if (!f.eaten && f.y < 700) {
+            let d = Math.hypot(f.x - this.x, f.y - this.y);
+            if (d < minD) { minD = d; targetFood = f; }
+          }
+        }
+
+        if (targetFood) {
+          this.targetX = targetFood.x;
+          this.targetY = targetFood.y;
+          if (minD < 16) {
+            targetFood.eaten = true;
+            sound.eat();
+            addXP(4);
+          }
+        } else {
+          // Патрулирование
+          if (Math.hypot(this.targetX - this.x, this.targetY - this.y) < 40 || Math.random() < 0.005) {
+            this.targetX = 60 + Math.random() * 340;
+            this.targetY = 120 + Math.random() * 480;
+          }
+        }
+
+        const dx = this.targetX - this.x;
+        const dy = this.targetY - this.y;
+        this.targetAngle = Math.atan2(dy, dx);
+
+        let diff = this.targetAngle - this.angle;
+        while (diff < -Math.PI) diff += Math.PI * 2;
+        while (diff > Math.PI) diff -= Math.PI * 2;
+        this.angle += diff * 0.035;
+
+        this.strokeCD -= 0.016;
+        if (this.strokeCD <= 0 && Math.hypot(dx, dy) > 40) {
+          this.giveThrust(0.5);
+          this.strokeCD = 1.3 + Math.random() * 1.5;
+        }
+
+        this.speed *= 0.98;
+        if (this.speed < 0.15) this.speed = 0.15;
+
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed + Math.sin(this.time * 2) * 0.3;
+
+        this.x = Math.max(50, Math.min(410, this.x));
+        this.y = Math.max(100, Math.min(660, this.y));
+      }
+
+      draw() {
+        const px = Math.floor(this.x);
+        const py = Math.floor(this.y);
+
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.rotate(this.angle);
+
+        if (Math.cos(this.angle) < 0) {
+          ctx.scale(1, -1);
+        }
+
+        // Палитры купленных скинов
+        let cBody = '#0f172a', cScale = '#1e40af', cFin = '#ff007f', cTip = '#00f5d4';
+        if (player.skin === 'sakura') {
+          cBody = '#500724'; cScale = '#be185d'; cFin = '#f472b6'; cTip = '#fed7aa';
+        } else if (player.skin === 'gold') {
+          cBody = '#78350f'; cScale = '#d97706'; cFin = '#fbbf24'; cTip = '#fef08a';
+        } else if (player.skin === 'samurai') {
+          cBody = '#0a0a0c'; cScale = '#374151'; cFin = '#dc2626'; cTip = '#ffffff';
+        }
+
+        // 1. Хвост (Halfmoon Veil)
+        for (let r = 0; r < 11; r++) {
+          const spread = (r - 5) * 0.15;
+          const wave = Math.sin(this.time * 2.8 - r * 0.3) * 6;
+          const len = 42 - Math.abs(r - 5) * 2;
+
+          ctx.strokeStyle = (r % 2 === 0) ? cTip : cFin;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(-18, 0);
+          ctx.quadraticCurveTo(-18 - len * 0.5, spread * 24 + wave * 0.6, -18 - len, spread * 38 + wave);
+          ctx.stroke();
+        }
+
+        // 2. Спинной плавник
+        for (let d = 0; d < 7; d++) {
+          const dWave = Math.sin(this.time * 2.5 + d * 0.4) * 4;
+          ctx.strokeStyle = cFin;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(-12 + d * 3, -6);
+          ctx.lineTo(-16 + d * 2, -22 + dWave);
+          ctx.stroke();
+        }
+
+        // 3. Брюшные нити-усики
+        const vWave = Math.sin(this.time * 3.5) * 4;
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(2, 6);
+        ctx.lineTo(-2, 26 + vWave);
+        ctx.stroke();
+
+        // 4. Тело
+        ctx.fillStyle = cBody;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 20, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Чешуйки
+        ctx.fillStyle = cScale;
+        ctx.fillRect(-6, -3, 3, 3);
+        ctx.fillRect(0, -2, 3, 3);
+        ctx.fillRect(-3, 1, 3, 3);
+
+        // 5. Глаз
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(11, -3, 4, 4);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(12, -3, 2, 3);
+
+        ctx.restore();
+      }
+    }
+
+    const betta = new MajesticBetta();
+
+    // Интерактив: тач и клик по воде
+    canvas.addEventListener('pointerdown', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = (e.clientX - rect.left) * (460 / rect.width);
+      const clickY = (e.clientY - rect.top) * (740 / rect.height);
+
+      // Проверка на ласку (клик прямо по рыбке)
+      if (Math.hypot(clickX - betta.x, clickY - betta.y) < 45) {
+        userAction('pet');
+      } else {
+        betta.targetX = clickX;
+        betta.targetY = clickY;
+        betta.giveThrust(0.5);
+        sound.pop();
+        for (let i = 0; i < 4; i++) {
+          bubbles.push({ x: clickX + (Math.random()-0.5)*12, y: clickY, speed: 0.8 });
+        }
+      }
+    });
+
+    // Главный цикл рендера
+    function loop() {
+      // 1. Фон в зависимости от темы
+      let g1 = '#001438', g2 = '#000617';
+      if (player.theme === 'tokyo') { g1 = '#280536'; g2 = '#080112'; }
+      const grad = ctx.createLinearGradient(0, 0, 0, 740);
+      grad.addColorStop(0, g1);
+      grad.addColorStop(1, g2);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 460, 740);
+
+      // 2. Дно
+      ctx.fillStyle = '#5c3a21';
+      ctx.fillRect(0, 715, 460, 25);
+
+      // 3. Декорации
+      if (player.decor.torii) {
+        ctx.fillStyle = '#dc2626';
+        ctx.fillRect(70, 650, 6, 65);
+        ctx.fillRect(120, 650, 6, 65);
+        ctx.fillRect(60, 655, 76, 6);
+        ctx.fillRect(64, 665, 68, 4);
+      }
+      if (player.decor.crystal) {
+        ctx.fillStyle = '#00f5d4';
+        ctx.beginPath();
+        ctx.moveTo(360, 715);
+        ctx.lineTo(370, 665);
+        ctx.lineTo(380, 715);
+        ctx.fill();
+      }
+
+      // 4. Пузыри
+      ctx.fillStyle = '#7dd3fc';
+      bubbles.forEach(b => {
+        b.y -= b.speed;
+        if (b.y < -5) { b.y = 720; b.x = Math.random() * 460; }
+        ctx.fillRect(Math.floor(b.x), Math.floor(b.y), 2, 2);
+      });
+
+      // 5. Корм
+      for (let i = foods.length - 1; i >= 0; i--) {
+        const f = foods[i];
+        f.update();
+        f.draw();
+        if (f.eaten || f.y > 715) foods.splice(i, 1);
+      }
+
+      // 6. Сердечки
+      for (let i = hearts.length - 1; i >= 0; i--) {
+        const h = hearts[i];
+        h.y += h.vy;
+        h.alpha -= 0.02;
+        ctx.fillStyle = `rgba(255, 0, 127, ${h.alpha})`;
+        ctx.font = '12px sans-serif';
+        ctx.fillText('💖', h.x, h.y);
+        if (h.alpha <= 0) hearts.splice(i, 1);
+      }
+
+      // 7. Петушок
+      betta.update();
+      betta.draw();
+
+      requestAnimationFrame(loop);
+    }
+
+    loop();
+  </script>
+</body>
+</html>
