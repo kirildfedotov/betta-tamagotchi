@@ -2,29 +2,26 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#07060c">
-  <title>POCKET AQUA DX 1996 ★ ポケットアクア DX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>電脳金魚 1999 // CYBER-FISH TAMAGOTCHI</title>
   
+  <!-- Ретро-шрифты Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --pixel-font: 'Press Start 2P', monospace;
-      --ui-font: 'Rubik', sans-serif;
-      --bg-dark: #07060c;
-      --nes-gold: #ffd214;
-      --nes-cyan: #00f5d4;
-      --nes-pink: #ff007f;
-      --nes-blue: #2563eb;
-      --nes-green: #38ef7d;
-      --nes-red: #e11d48;
-      --safe-top: env(safe-area-inset-top, 10px);
-      --safe-bottom: env(safe-area-inset-bottom, 12px);
+      --bg-dark: #0a0612;
+      --case-color: #1a1528;
+      --case-border: #3d2a63;
+      --neon-pink: #ff2a85;
+      --neon-cyan: #00f0ff;
+      --neon-yellow: #ffe600;
+      --neon-green: #05ffa1;
+      --neon-purple: #9d4edd;
+      --screen-bg: #031018;
+      --crt-glow: rgba(0, 240, 255, 0.15);
     }
 
     * {
@@ -32,1485 +29,1101 @@
       margin: 0;
       padding: 0;
       user-select: none;
+      -webkit-user-select: none;
       -webkit-tap-highlight-color: transparent;
-      image-rendering: pixelated;
     }
 
-    body, html {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #040307;
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 50% 20%, rgba(255, 42, 133, 0.15), transparent 60%),
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: #fff;
+      font-family: 'Press Start 2P', monospace;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: var(--ui-font);
+      padding: 12px;
+      overflow-x: hidden;
     }
 
-    /* Главная оболочка приложения */
-    .app-viewport {
-      position: relative;
+    /* Главный контейнер консоли */
+    .tamagotchi-case {
       width: 100%;
-      height: 100%;
       max-width: 480px;
-      max-height: 960px;
-      background: #0d0a14;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow: 0 0 60px rgba(0, 0, 0, 0.95), 0 0 0 8px #1a1626;
+      background: linear-gradient(165deg, #2b1f47 0%, #161026 60%, #0d0818 100%);
+      border: 4px solid var(--neon-pink);
+      border-radius: 40px 40px 55px 55px;
+      padding: 24px 20px 32px;
+      box-shadow: 
+        0 0 25px rgba(255, 42, 133, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.3),
+        inset 0 -8px 16px rgba(0, 0, 0, 0.8),
+        0 20px 40px rgba(0, 0, 0, 0.9);
+      position: relative;
     }
 
-    @media (max-width: 500px) {
-      .app-viewport {
-        max-width: 100%;
-        max-height: 100%;
-        border-radius: 0;
-        box-shadow: none;
-      }
-    }
-    @media (min-width: 501px) {
-      .app-viewport {
-        border-radius: 36px;
-      }
-    }
-
-    /* Верхний статус-бар */
-    .app-header {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 25;
-      padding: calc(var(--safe-top) + 6px) 16px 12px;
+    /* Верхний декоративный шильдик */
+    .brand-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: linear-gradient(180deg, rgba(7, 6, 12, 0.95) 0%, rgba(7, 6, 12, 0.6) 80%, transparent 100%);
-      pointer-events: auto;
+      margin-bottom: 15px;
+      padding: 0 8px;
     }
 
-    .user-profile {
+    .brand-title {
+      font-size: 11px;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 8px var(--neon-cyan);
+      letter-spacing: 1px;
       display: flex;
-      align-items: center;
-      gap: 10px;
+      flex-direction: column;
+      gap: 3px;
     }
 
-    .level-badge {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: #fff;
-      font-family: var(--pixel-font);
-      font-size: 8px;
-      padding: 6px 9px;
-      border-radius: 8px;
-      border: 2px solid #fff;
-      box-shadow: 0 2px 0 #000;
-      cursor: pointer;
-      transition: transform 0.1s;
+    .brand-title span.kanji {
+      font-family: 'DotGothic16', sans-serif;
+      font-size: 14px;
+      color: var(--neon-pink);
+      text-shadow: 0 0 8px var(--neon-pink);
     }
 
-    .level-badge:active {
-      transform: scale(0.92);
-    }
-
-    .currencies {
+    .top-controls {
       display: flex;
       gap: 8px;
     }
 
-    .pill-currency {
-      background: rgba(0, 0, 0, 0.7);
-      border: 1.5px solid rgba(255, 255, 255, 0.3);
-      padding: 5px 11px;
-      border-radius: 14px;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      backdrop-filter: blur(8px);
+    .mini-btn {
+      background: #251838;
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      padding: 6px 8px;
+      border-radius: 6px;
       cursor: pointer;
+      box-shadow: 0 0 6px rgba(0, 240, 255, 0.3);
+      transition: all 0.15s;
     }
 
-    .pill-currency.gem {
-      border-color: var(--nes-cyan);
-      box-shadow: 0 0 10px rgba(0, 245, 212, 0.3);
+    .mini-btn:hover {
+      background: var(--neon-cyan);
+      color: #000;
     }
 
-    /* Аквариумная область */
-    .screen-area {
+    /* CRT Экран */
+    .screen-bezel {
+      background: #050508;
+      padding: 14px;
+      border-radius: 20px;
+      border: 3px solid #3c2a61;
+      box-shadow: inset 0 0 15px #000;
       position: relative;
-      flex: 1;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #000b1a;
     }
 
-    #aquarium {
-      width: 100%;
-      height: 100%;
+    .crt-screen {
+      position: relative;
+      background: var(--screen-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid #00f0ff55;
+      box-shadow: inset 0 0 30px rgba(0, 240, 255, 0.2);
+    }
+
+    /* Эффект ЭЛТ-монитора и сканлайнов */
+    .crt-screen::before {
+      content: " ";
       display: block;
-      touch-action: none;
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%);
+      background-size: 100% 4px;
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .crt-screen::after {
+      content: " ";
+      position: absolute;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: radial-gradient(circle at 50% 50%, transparent 65%, rgba(0,0,0,0.7) 100%);
+      pointer-events: none;
+      z-index: 11;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 250px;
       cursor: crosshair;
     }
 
-    .crt-scanlines {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 5;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%);
-      background-size: 100% 4px;
+    /* Панель показателей (HUD) */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 15px;
+      background: rgba(8, 4, 18, 0.7);
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid #3d2a63;
     }
 
-    #dirt-layer {
-      position: absolute;
-      inset: 0;
-      z-index: 3;
-      background: #2b3a0b;
-      mix-blend-mode: multiply;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 1.2s ease;
-    }
-
-    /* Индикаторы Тамагочи */
-    .vitals-pill {
-      position: absolute;
-      top: calc(var(--safe-top) + 54px);
-      left: 14px;
-      right: 14px;
-      z-index: 10;
-      background: rgba(8, 10, 24, 0.78);
-      backdrop-filter: blur(12px);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-radius: 16px;
-      padding: 8px 14px;
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .vital-col {
-      flex: 1;
+    .stat-item {
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
 
-    .vital-title {
+    .stat-label {
       font-size: 8px;
-      font-family: var(--pixel-font);
-      color: #94a3b8;
+      color: #aaa;
       display: flex;
       justify-content: space-between;
     }
 
-    .v-bar {
-      height: 6px;
-      background: #191624;
+    .stat-bar-outer {
+      height: 8px;
+      background: #110d1f;
+      border: 1px solid #483174;
       border-radius: 4px;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.25);
+      padding: 1px;
     }
 
-    .v-fill {
+    .stat-bar-inner {
       height: 100%;
-      width: 100%;
-      border-radius: 3px;
-      transition: width 0.4s ease, background-color 0.4s ease;
+      width: 80%;
+      background: var(--neon-cyan);
+      box-shadow: 0 0 8px currentColor;
+      transition: width 0.3s ease, background 0.3s ease;
+      border-radius: 2px;
     }
 
-    /* Плавающие кнопки действий */
-    .quick-actions {
-      position: absolute;
-      right: 16px;
-      bottom: calc(82px + var(--safe-bottom));
-      z-index: 15;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    /* Инфо-тикер (бегущая строка) */
+    .status-ticker {
+      font-family: 'DotGothic16', monospace;
+      font-size: 13px;
+      color: var(--neon-yellow);
+      background: #02070c;
+      border: 1px dashed #00f0ff44;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-top: 12px;
+      text-align: center;
+      text-shadow: 0 0 6px var(--neon-yellow);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .fab-btn {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: #171324;
-      border: 3px solid #fff;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.6), 3px 3px 0 #000;
-      color: #fff;
-      font-size: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      transition: transform 0.1s;
+    /* D-PAD и Аркадные кнопки */
+    .controls-panel {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 20px;
     }
 
-    .fab-btn:active {
-      transform: scale(0.92) translate(2px, 2px);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.6);
-    }
-
-    .fab-label {
-      font-family: var(--pixel-font);
-      font-size: 6px;
-      margin-top: 2px;
-    }
-
-    /* Всплывающий тост */
-    .toast-msg {
-      position: absolute;
-      bottom: calc(90px + var(--safe-bottom));
-      left: 16px;
-      right: 84px;
-      z-index: 15;
-      background: rgba(2, 6, 24, 0.92);
-      border: 2px solid var(--nes-cyan);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.85);
+    .action-btn {
+      background: linear-gradient(180deg, #321c52 0%, #1f0f35 100%);
+      border: 2px solid var(--neon-pink);
       border-radius: 14px;
-      padding: 10px 14px;
-      color: #fff;
-      font-size: 10px;
-      line-height: 1.5;
-      font-family: var(--pixel-font);
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.25s ease;
-      pointer-events: none;
-    }
-
-    .toast-msg.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Нижний док / таб-бар */
-    .bottom-dock {
-      width: 100%;
-      background: #0d0a17;
-      border-top: 2px solid rgba(255, 255, 255, 0.15);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 8px 10px calc(8px + var(--safe-bottom));
-      z-index: 25;
-    }
-
-    .dock-tab {
+      padding: 12px 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
-      background: none;
-      border: none;
-      color: #8b859e;
+      gap: 6px;
       cursor: pointer;
-      font-size: 8px;
-      font-family: var(--pixel-font);
-      padding: 6px 10px;
-      transition: color 0.2s;
+      box-shadow: 0 5px 0 #120722, 0 0 10px rgba(255, 42, 133, 0.3);
+      transition: transform 0.08s, box-shadow 0.08s, filter 0.1s;
     }
 
-    .dock-tab.active, .dock-tab:hover {
-      color: var(--nes-cyan);
+    .action-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 #120722, 0 0 15px rgba(255, 42, 133, 0.7);
     }
 
-    .dock-icon {
-      font-size: 19px;
+    .btn-icon {
+      font-size: 20px;
+      line-height: 1;
     }
 
-    /* Модальные окна (шторки) */
-    .bottom-sheet {
-      position: absolute;
-      inset: 0;
-      z-index: 40;
-      background: rgba(0, 0, 0, 0.75);
+    .btn-title {
+      font-size: 7px;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-clean { border-color: var(--neon-cyan); box-shadow: 0 5px 0 #052636, 0 0 10px rgba(0, 240, 255, 0.3); }
+    .btn-clean:active { box-shadow: 0 1px 0 #052636; }
+
+    .btn-play { border-color: var(--neon-green); box-shadow: 0 5px 0 #073322, 0 0 10px rgba(5, 255, 161, 0.3); }
+    .btn-play:active { box-shadow: 0 1px 0 #073322; }
+
+    .btn-light { border-color: var(--neon-yellow); box-shadow: 0 5px 0 #3d3405, 0 0 10px rgba(255, 230, 0, 0.3); }
+    .btn-light:active { box-shadow: 0 1px 0 #3d3405; }
+
+    /* Окно авторизации / профиля */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(6, 2, 15, 0.88);
       backdrop-filter: blur(8px);
       display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.25s ease;
-    }
-
-    .bottom-sheet.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .sheet-card {
-      background: #141021;
-      border-top: 4px solid #fff;
-      border-radius: 28px 28px 0 0;
-      max-height: 82%;
-      display: flex;
-      flex-direction: column;
-      padding: 20px 18px calc(16px + var(--safe-bottom));
-      box-shadow: 0 -10px 40px rgba(0,0,0,0.85);
-      transform: translateY(100%);
-      transition: transform 0.28s cubic-bezier(0.1, 0.9, 0.2, 1);
-    }
-
-    .bottom-sheet.open .sheet-card {
-      transform: translateY(0);
-    }
-
-    .sheet-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .sheet-title {
-      font-family: var(--pixel-font);
-      font-size: 12px;
-      color: var(--nes-gold);
-    }
-
-    .sheet-close {
-      background: #251f36;
-      border: 2px solid #fff;
-      color: #fff;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .sheet-scroll {
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding-right: 4px;
-    }
-
-    /* Карточки в магазине и декоре */
-    .shop-item {
-      background: #1d172e;
-      border: 2px solid rgba(255,255,255,0.15);
-      border-radius: 16px;
-      padding: 12px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .shop-item.vip {
-      border: 2px solid var(--nes-gold);
-      background: linear-gradient(135deg, #1b122e, #2a1b42);
-      box-shadow: 0 0 15px rgba(255, 210, 20, 0.25);
-    }
-
-    .item-info h4 {
-      font-family: var(--pixel-font);
-      font-size: 10px;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-
-    .item-info p {
-      font-size: 11px;
-      color: #94a3b8;
-    }
-
-    .btn-action {
-      background: linear-gradient(135deg, var(--nes-pink), #c026d3);
-      color: #fff;
-      border: 2px solid #fff;
-      box-shadow: 2px 2px 0 #000;
-      border-radius: 12px;
-      padding: 8px 12px;
-      font-family: var(--pixel-font);
-      font-size: 8px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .btn-action:active {
-      transform: translate(2px, 2px);
-      box-shadow: none;
-    }
-
-    .btn-action.coin-btn {
-      background: linear-gradient(135deg, #d97706, #f59e0b);
-    }
-
-    .btn-action.equipped {
-      background: #10b981;
-      border-color: #a7f3d0;
-      box-shadow: none;
-    }
-
-    /* Экран входа */
-    .auth-fullscreen {
-      position: absolute;
-      inset: 0;
-      z-index: 100;
-      background: #090614;
-      display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
+      z-index: 100;
+      padding: 16px;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 380px;
+      background: #140d24;
+      border: 3px solid var(--neon-cyan);
+      border-radius: 16px;
       padding: 24px;
-      text-align: center;
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.35);
+      position: relative;
     }
 
-    .app-logo {
-      font-family: var(--pixel-font);
-      font-size: 18px;
-      color: var(--nes-gold);
-      margin-bottom: 6px;
-      text-shadow: 3px 3px 0 var(--nes-pink);
-    }
-
-    .app-tag {
-      font-family: var(--pixel-font);
-      font-size: 8px;
-      color: var(--nes-cyan);
-      margin-bottom: 30px;
-    }
-
-    .retro-input {
-      width: 100%;
-      max-width: 290px;
-      background: #000;
-      border: 2px solid #fff;
-      color: #38ef7d;
-      font-family: var(--pixel-font);
+    .modal-header {
       font-size: 11px;
-      padding: 12px;
-      margin-bottom: 14px;
-      outline: none;
-      border-radius: 8px;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px var(--neon-cyan);
+      margin-bottom: 20px;
       text-align: center;
+      line-height: 1.5;
     }
 
-    .btn-start {
-      width: 100%;
-      max-width: 290px;
-      background: var(--nes-red);
-      color: #fff;
-      border: 3px solid #fff;
-      box-shadow: 4px 4px 0 #000;
-      padding: 14px;
-      font-family: var(--pixel-font);
-      font-size: 11px;
-      border-radius: 12px;
+    .modal-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 8px;
+      background: #090513;
+      border: 1px solid #3f2a68;
+      color: #888;
+      font-family: inherit;
+      font-size: 9px;
       cursor: pointer;
     }
 
-    .btn-start:active {
-      transform: translate(4px, 4px);
-      box-shadow: none;
+    .tab-btn.active {
+      background: #251347;
+      border-color: var(--neon-pink);
+      color: var(--neon-pink);
+      box-shadow: 0 0 8px rgba(255, 42, 133, 0.4);
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 8px;
+      color: #9d8abf;
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: #080312;
+      border: 1px solid var(--neon-purple);
+      border-radius: 6px;
+      padding: 10px;
+      color: #fff;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      outline: none;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.8);
+    }
+
+    .form-input:focus {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 10px var(--neon-cyan);
+    }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      background: var(--neon-pink);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 15px var(--neon-pink);
+      transition: opacity 0.2s;
+    }
+
+    .submit-btn:hover {
+      opacity: 0.9;
+    }
+
+    .auth-error {
+      color: #ff3b3b;
+      font-size: 8px;
+      margin-top: 10px;
+      text-align: center;
+      line-height: 1.4;
+      display: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Ночной режим для экрана */
+    .night-overlay {
+      background: rgba(2, 5, 20, 0.7) !important;
     }
   </style>
 </head>
 <body>
 
-  <div class="app-viewport">
+  <!-- Основной корпус консоли -->
+  <div class="tamagotchi-case">
+    
+    <!-- Шапка консоли -->
+    <div class="brand-header">
+      <div class="brand-title">
+        <span class="kanji">電脳金魚 '99</span>
+        <span>NEO-TOKYO V1.0</span>
+      </div>
+      <div class="top-controls">
+        <button id="soundToggle" class="mini-btn">🔊 BGM</button>
+        <button id="profileBtn" class="mini-btn">👤 PILOT</button>
+      </div>
+    </div>
 
-    <!-- Верхний статус-бар -->
-    <header class="app-header" id="app-header" style="display: none;">
-      <div class="user-profile">
-        <!-- Клик 3 раза по плашке LV начисляет +100k 🪙 и +100k 💎 -->
-        <div class="level-badge" id="hud-level" onclick="devCheat()" title="Секретный чит для теста: нажми 3 раза">LV.1</div>
-        <div style="display:flex; flex-direction:column; gap:3px;">
-          <span style="color:#fff; font-size:11px; font-weight:700;" id="hud-name">Player</span>
-          <div style="width:75px; height:4px; background:#1f1c2b; border-radius:2px; overflow:hidden;">
-            <div id="hud-xp-bar" style="width:0%; height:100%; background:var(--nes-cyan); transition:width 0.3s;"></div>
-          </div>
+    <!-- ЭЛТ экран -->
+    <div class="screen-bezel">
+      <div class="crt-screen" id="crtScreen">
+        <canvas id="aquariumCanvas" width="400" height="250"></canvas>
+      </div>
+    </div>
+
+    <!-- Инфострока состояния -->
+    <div class="status-ticker" id="statusMessage">
+      魚は元気よく泳いでいます // РЫБКА ЧУВСТВУЕТ СЕБЯ ПРЕКРАСНО!
+    </div>
+
+    <!-- Шкалы характеристик рыбки -->
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-label">
+          <span>ГОЛОД (FOOD)</span>
+          <span id="hungerVal">85%</span>
+        </div>
+        <div class="stat-bar-outer">
+          <div class="stat-bar-inner" id="hungerBar" style="width: 85%; background: var(--neon-pink);"></div>
+        </div>
+      </div>
+      
+      <div class="stat-item">
+        <div class="stat-label">
+          <span>ЧИСТОТА (AQUA)</span>
+          <span id="cleanVal">90%</span>
+        </div>
+        <div class="stat-bar-outer">
+          <div class="stat-bar-inner" id="cleanBar" style="width: 90%; background: var(--neon-cyan);"></div>
         </div>
       </div>
 
-      <div class="currencies">
-        <div class="pill-currency" onclick="toast('🪙 Монеты начисляются за уход за рыбкой!')">
-          <span>🪙</span>
-          <span id="hud-coins">150</span>
+      <div class="stat-item">
+        <div class="stat-label">
+          <span>РАДОСТЬ (JOY)</span>
+          <span id="joyVal">70%</span>
         </div>
-        <div class="pill-currency gem" onclick="openSheet('shop')" title="Магазин и донат">
-          <span>💎</span>
-          <span id="hud-gems">30</span>
-          <span style="color:var(--nes-gold); font-size:12px; margin-left:2px;">+</span>
-        </div>
-      </div>
-    </header>
-
-    <!-- Игровой холст -->
-    <main class="screen-area">
-      <div class="crt-scanlines"></div>
-      <div id="dirt-layer"></div>
-
-      <!-- Фиксированное внутреннее разрешение 480x760 -->
-      <canvas id="aquarium" width="480" height="760"></canvas>
-
-      <!-- Индикаторы состояния питомца -->
-      <div class="vitals-pill" id="vitals-pill" style="display: none;">
-        <div class="vital-col">
-          <div class="vital-title"><span>СЫТОСТЬ</span><span id="txt-hunger">100%</span></div>
-          <div class="v-bar"><div class="v-fill" id="bar-hunger" style="background:#ffd214;"></div></div>
-        </div>
-        <div class="vital-col">
-          <div class="vital-title"><span>ВОДА</span><span id="txt-clean">100%</span></div>
-          <div class="v-bar"><div class="v-fill" id="bar-clean" style="background:#00f5d4;"></div></div>
-        </div>
-        <div class="vital-col">
-          <div class="vital-title"><span>РАДОСТЬ</span><span id="txt-happy">100%</span></div>
-          <div class="v-bar"><div class="v-fill" id="bar-happy" style="background:#ff007f;"></div></div>
+        <div class="stat-bar-outer">
+          <div class="stat-bar-inner" id="joyBar" style="width: 70%; background: var(--neon-yellow);"></div>
         </div>
       </div>
 
-      <!-- Всплывающее уведомление -->
-      <div class="toast-msg" id="toast">Погладьте рыбку пальцем!</div>
-
-      <!-- Плавающие кнопки действий -->
-      <div class="quick-actions" id="quick-actions" style="display: none;">
-        <button class="fab-btn" onclick="userAction('feed')" title="Кормить">
-          <span>🍞</span>
-          <span class="fab-label">ЕДА</span>
-        </button>
-        <button class="fab-btn" onclick="userAction('clean')" title="Очистить воду">
-          <span>🧽</span>
-          <span class="fab-label">ВОДА</span>
-        </button>
-        <button class="fab-btn" onclick="userAction('pet')" title="Погладить">
-          <span>💖</span>
-          <span class="fab-label">ЛАСТИТЬ</span>
-        </button>
-      </div>
-    </main>
-
-    <!-- Нижняя мобильная навигация -->
-    <nav class="bottom-dock" id="bottom-dock" style="display: none;">
-      <button class="dock-tab active" onclick="switchTab('aqua')">
-        <span class="dock-icon">🐟</span>
-        <span>АКВА</span>
-      </button>
-      <button class="dock-tab" onclick="openSheet('shop')">
-        <span class="dock-icon">💎</span>
-        <span>ДОНАТ/ШОП</span>
-      </button>
-      <button class="dock-tab" onclick="openSheet('decor')">
-        <span class="dock-icon">🎨</span>
-        <span>ДЕКОР</span>
-      </button>
-      <button class="dock-tab" onclick="openSheet('quests')">
-        <span class="dock-icon">🏆</span>
-        <span>КВЕСТЫ</span>
-      </button>
-    </nav>
-
-    <!-- ШТОРКА 1: МАГАЗИН И ДОНАТ -->
-    <div class="bottom-sheet" id="sheet-shop">
-      <div class="sheet-card">
-        <div class="sheet-head">
-          <div class="sheet-title">💎 МАГАЗИН & ДОНАТ</div>
-          <button class="sheet-close" onclick="closeSheet('shop')">✕</button>
+      <div class="stat-item">
+        <div class="stat-label">
+          <span>ЭНЕРГИЯ (NRG)</span>
+          <span id="energyVal">100%</span>
         </div>
-        <div class="sheet-scroll">
-          <div style="font-size:9px; font-family:var(--pixel-font); color:var(--nes-cyan); margin:6px 0;">ПОДДЕРЖКА / ДОНАТ:</div>
-          
-          <div class="shop-item vip">
-            <div class="item-info">
-              <h4>☕ ЧАШКА КОФЕ</h4>
-              <p>+100 💎 Жемчужин • Респект автору</p>
-            </div>
-            <button class="btn-action" onclick="simulateDonate('Кофе автору', 99, 100)">99 ₽</button>
-          </div>
-
-          <div class="shop-item vip">
-            <div class="item-info">
-              <h4>👑 КОРОЛЕВСКИЙ VIP</h4>
-              <p>+500 💎 • Скин «Золотой Дракон»</p>
-            </div>
-            <button class="btn-action" onclick="simulateDonate('VIP Набор', 299, 500)">299 ₽</button>
-          </div>
-
-          <div style="font-size:9px; font-family:var(--pixel-font); color:var(--nes-gold); margin:12px 0 6px;">СКИHЫ ПЕТУШКА:</div>
-
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>👑 КОРОЛЕВСКИЙ</h4>
-              <p>Классический сапфирово-алый вуалехвост</p>
-            </div>
-            <button class="btn-action" id="btn-skin-classic" onclick="equipSkin('classic')">✓ НАДЕТО</button>
-          </div>
-
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>🌸 САКУРА-НЕОН</h4>
-              <p>Розово-бирюзовый шелковый веер</p>
-            </div>
-            <button class="btn-action" id="btn-skin-sakura" onclick="handleSkinClick('sakura', 80)">80 💎</button>
-          </div>
-
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>🐉 ЗОЛОТОЙ ДРАКОН</h4>
-              <p>Императорский янтарно-золотой блеск</p>
-            </div>
-            <button class="btn-action" id="btn-skin-gold" onclick="handleSkinClick('gold', 150)">150💎</button>
-          </div>
-
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>🥷 ЧЕРНЫЙ САМУРАЙ</h4>
-              <p>Тёмно-стальной окрас с алыми лучами</p>
-            </div>
-            <button class="btn-action" id="btn-skin-samurai" onclick="handleSkinClick('samurai', 120)">120 💎</button>
-          </div>
-
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>⚡ КИБЕРПАНК '96</h4>
-              <p>Неоново-фиолетовый эксклюзивный вид</p>
-            </div>
-            <button class="btn-action" id="btn-skin-cyber" onclick="handleSkinClick('cyber', 200)">200 💎</button>
-          </div>
-
-          <div style="font-size:9px; font-family:var(--pixel-font); color:#38ef7d; margin:14px 0 6px;">ГАДЖЕТЫ И УЛУЧШЕНИЯ:</div>
-
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>🤖 АВТОКОРМУШКА</h4>
-              <p>Сытость не опускается ниже 50%</p>
-            </div>
-            <button class="btn-action coin-btn" id="btn-gadget-feeder" onclick="handleGadgetClick('feeder', 300)">300 🪙</button>
-          </div>
-
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>🧪 НЕОНОВЫЙ ФИЛЬТР</h4>
-              <p>Вода всегда остаётся кристально чистой</p>
-            </div>
-            <button class="btn-action coin-btn" id="btn-gadget-filter" onclick="handleGadgetClick('filter', 500)">500 🪙</button>
-          </div>
-
+        <div class="stat-bar-outer">
+          <div class="stat-bar-inner" id="energyBar" style="width: 100%; background: var(--neon-green);"></div>
         </div>
       </div>
     </div>
 
-    <!-- ШТОРКА 2: ДЕКОР И ТЕМЫ -->
-    <div class="bottom-sheet" id="sheet-decor">
-      <div class="sheet-card">
-        <div class="sheet-head">
-          <div class="sheet-title">🎨 ДЕКОР И ФОНЫ</div>
-          <button class="sheet-close" onclick="closeSheet('decor')">✕</button>
-        </div>
-        <div class="sheet-scroll">
-          <div style="font-size:9px; font-family:var(--pixel-font); color:var(--nes-gold); margin:4px 0 6px;">ДОННЫЕ ДЕКОРАЦИИ:</div>
+    <!-- Кнопки управления -->
+    <div class="controls-panel">
+      <button class="action-btn" id="feedBtn">
+        <span class="btn-icon">🍙</span>
+        <span class="btn-title">КОРМ</span>
+      </button>
 
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>⛩️ ВОРОТА ТОРИИ</h4>
-              <p>Традиционная японская святыня</p>
-            </div>
-            <button class="btn-action coin-btn" id="btn-decor-torii" onclick="handleDecorClick('torii', 150)">150 🪙</button>
-          </div>
+      <button class="action-btn btn-clean" id="cleanBtn">
+        <span class="btn-icon">🫧</span>
+        <span class="btn-title">ФИЛЬТР</span>
+      </button>
 
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>🔮 НЕОНОВЫЙ КРИСТАЛЛ</h4>
-              <p>Мягко сияет и пускает частицы</p>
-            </div>
-            <button class="btn-action coin-btn" id="btn-decor-crystal" onclick="handleDecorClick('crystal', 200)">200 🪙</button>
-          </div>
+      <button class="action-btn btn-play" id="playBtn">
+        <span class="btn-icon">🎮</span>
+        <span class="btn-title">ИГРА</span>
+      </button>
 
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>🎋 НЕОНОВЫЙ БОНСАЙ</h4>
-              <p>Подводное мини-деревце с подсветкой</p>
-            </div>
-            <button class="btn-action coin-btn" id="btn-decor-bonsai" onclick="handleDecorClick('bonsai', 250)">250 🪙</button>
-          </div>
+      <button class="action-btn btn-light" id="sleepBtn">
+        <span class="btn-icon">💡</span>
+        <span class="btn-title">НЕОН</span>
+      </button>
+    </div>
+  </div>
 
-          <div style="font-size:9px; font-family:var(--pixel-font); color:var(--nes-cyan); margin:14px 0 6px;">ТЕМЫ АКВАРИУМА:</div>
-
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>🌊 ГЛУБОКИЙ ОКЕАН</h4>
-              <p>Классический сапфировый градиент</p>
-            </div>
-            <button class="btn-action" id="btn-theme-deep" onclick="setTheme('deep')">ВЫБРАТЬ</button>
-          </div>
-
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>🌆 КИБЕР-ТОКИО 1996</h4>
-              <p>Фиолетовый неоновый горизонт</p>
-            </div>
-            <button class="btn-action" id="btn-theme-tokyo" onclick="setTheme('tokyo')">ВЫБРАТЬ</button>
-          </div>
-
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>🌿 ИЗУМРУДНЫЙ ГРОТ</h4>
-              <p>Глубокие тропические зелёные тона</p>
-            </div>
-            <button class="btn-action" id="btn-theme-emerald" onclick="setTheme('emerald')">ВЫБРАТЬ</button>
-          </div>
-
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>🌅 ЗАКАТ К ОБЕ</h4>
-              <p>Тёплые ретро-красно-золотые волны</p>
-            </div>
-            <button class="btn-action" id="btn-theme-sunset" onclick="setTheme('sunset')">ВЫБРАТЬ</button>
-          </div>
-        </div>
+  <!-- Окно авторизации / смены пилота -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        CYBER-NET SYSTEM v1.99<br>
+        <span style="font-size: 8px; color: var(--neon-pink);">[ ТЕРМИНАЛ ИДЕНТИФИКАЦИИ ]</span>
       </div>
-    </div>
 
-    <!-- ШТОРКА 3: КВЕСТЫ -->
-    <div class="bottom-sheet" id="sheet-quests">
-      <div class="sheet-card">
-        <div class="sheet-head">
-          <div class="sheet-title">🏆 КВЕСТЫ И НАГРАДЫ</div>
-          <button class="sheet-close" onclick="closeSheet('quests')">✕</button>
-        </div>
-        <div class="sheet-scroll">
-          <div class="shop-item vip">
-            <div class="item-info">
-              <h4>🎁 ЕЖЕДНЕВНЫЙ ПОДАРОК</h4>
-              <p>Заходите каждый день за монетами</p>
-            </div>
-            <button class="btn-action coin-btn" id="btn-daily" onclick="claimDaily()">+100 🪙</button>
-          </div>
-
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>💖 НЕЖНАЯ ЗАБОТА</h4>
-              <p>Погладить рыбку 5 раз</p>
-            </div>
-            <span style="font-size:10px; font-family:var(--pixel-font); color:#38ef7d;" id="quest-pets-txt">0/5</span>
-          </div>
-
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>🍞 ВКУСНЫЙ ОБЕД</h4>
-              <p>Покормить рыбку 3 раза</p>
-            </div>
-            <span style="font-size:10px; font-family:var(--pixel-font); color:#38ef7d;" id="quest-feed-txt">0/3</span>
-          </div>
-
-          <div class="shop-item">
-            <div class="item-info">
-              <h4>👑 ЗВАНИЕ МАСТЕРА</h4>
-              <p>Достигните 5 уровня (LV.5)</p>
-            </div>
-            <span style="font-size:9px; font-family:var(--pixel-font); color:var(--nes-gold);">+50 💎</span>
-          </div>
-        </div>
+      <div class="modal-tabs">
+        <button class="tab-btn active" id="tabLogin">ВХОД</button>
+        <button class="tab-btn" id="tabRegister">РЕГИСТРАЦИЯ</button>
       </div>
-    </div>
 
-    <!-- Экран старта/авторизации -->
-    <div class="auth-fullscreen" id="auth-screen">
-      <div class="app-logo">POCKET AQUA DX</div>
-      <div class="app-tag">-- ポケットアクア '96 MOBILE --</div>
-      <input type="text" class="retro-input" id="auth-input-name" placeholder="ВАШЕ ИМЯ" maxlength="12" autocomplete="off">
-      <button class="btn-start" onclick="handleStartApp()">НАЧАТЬ [START]</button>
-    </div>
+      <form id="authForm">
+        <div class="form-group">
+          <label class="form-label">ПОЗЫВНОЙ ПИЛОТА (USERNAME)</label>
+          <input type="text" class="form-input" id="authUsername" required maxlength="12" autocomplete="off" placeholder="SHINJI_99">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">КИБЕР-ПАРОЛЬ (PASSWORD)</label>
+          <input type="password" class="form-input" id="authPassword" required minlength="3" placeholder="••••">
+        </div>
 
+        <button type="submit" class="submit-btn" id="authSubmit">ПОДКЛЮЧИТЬСЯ</button>
+        <div class="auth-error" id="authError">ОШИБКА ДОСТУПА</div>
+      </form>
+    </div>
   </div>
 
   <script>
-    /* =====================================================================
-       1. ЧИПТЮН ЗВУКОВОЙ ДВИЖОК 8-BIT (WEB AUDIO API)
-       ===================================================================== */
-    const A = new (window.AudioContext || window.webkitAudioContext)();
-    function sfx(freq, type = 'square', dur = 0.1, vol = 0.05) {
-      if (A.state === 'suspended') A.resume();
-      try {
-        const osc = A.createOscillator();
-        const gain = A.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, A.currentTime);
-        gain.gain.setValueAtTime(vol, A.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, A.currentTime + dur);
-        osc.connect(gain);
-        gain.connect(A.destination);
-        osc.start();
-        osc.stop(A.currentTime + dur);
-      } catch(e){}
-    }
-
-    const sound = {
-      pop: () => sfx(650, 'triangle', 0.05, 0.07),
-      eat: () => { sfx(520, 'triangle', 0.07); setTimeout(() => sfx(840, 'triangle', 0.09), 60); },
-      coin: () => { sfx(987, 'square', 0.08); setTimeout(() => sfx(1318, 'square', 0.14), 70); },
-      gem: () => { [523, 659, 783, 1046, 1318].forEach((f, i) => setTimeout(() => sfx(f, 'square', 0.1, 0.04), i * 50)); },
-      heart: () => sfx(440, 'sine', 0.15, 0.08)
-    };
-
-    /* =====================================================================
-       2. ДАННЫЕ ИГРОКА, СОХРАНЕНИЕ И СЕКРЕТНЫЙ ЧИТ
-       ===================================================================== */
-    let player = {
-      name: 'Player',
-      level: 1,
-      xp: 0,
-      coins: 150,
-      gems: 30,
-      skin: 'classic',
-      theme: 'deep',
-      inventory: {
-        skins: ['classic'],
-        decor: {},
-        gadgets: {}
-      },
-      petCount: 0,
-      feedCount: 0,
-      lastDaily: 0
-    };
-
-    let pet = {
-      hunger: 100,
-      cleanliness: 100,
-      happiness: 100,
-      lastTick: Date.now()
-    };
-
-    // Форматирование чисел: 1000 -> 1k, 100000 -> 100k, 1500000 -> 1.5M
-    function formatCompact(num) {
-      if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-      if (num >= 1000) return (num / 1000).toFixed(num >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'k';
-      return Math.floor(num);
-    }
-
-    // Секретный чит: 3 тапа по уровню LV.x дают +100k
-    let cheatTaps = 0;
-    function devCheat() {
-      cheatTaps++;
-      if (cheatTaps >= 3) {
-        cheatTaps = 0;
-        player.coins += 100000;
-        player.gems += 100000;
-        updateHUD();
-        saveGame();
-        sound.gem();
-        toast('🎁 ТЕСТ: +100k 🪙 монет и +100k 💎 алмазов!');
-      }
-    }
-
-    function loadGame(name) {
-      const data = localStorage.getItem('pocket_aqua_dx_' + name);
-      if (data) {
-        try {
-          const parsed = JSON.parse(data);
-          player = { ...player, ...parsed.player };
-          pet = { ...pet, ...parsed.pet };
-          if (!player.inventory) player.inventory = { skins: ['classic'], decor: {}, gadgets: {} };
-        } catch(e) {}
-      } else {
-        player.name = name;
-      }
-      updateHUD();
-      updateShopUI();
-    }
-
-    function saveGame() {
-      if (!player.name) return;
-      localStorage.setItem('pocket_aqua_dx_' + player.name, JSON.stringify({ player, pet }));
-    }
-
-    function addXP(amount) {
-      player.xp += amount;
-      const need = player.level * 50;
-      if (player.xp >= need) {
-        player.xp -= need;
-        player.level++;
-        player.gems += 15;
-        sound.gem();
-        toast(`НОВЫЙ УРОВЕНЬ! LV.${player.level} (+15 💎)`);
-      }
-      updateHUD();
-      saveGame();
-    }
-
-    function updateHUD() {
-      document.getElementById('hud-name').innerText = player.name;
-      document.getElementById('hud-level').innerText = `LV.${player.level}`;
-      document.getElementById('hud-coins').innerText = formatCompact(player.coins);
-      document.getElementById('hud-gems').innerText = formatCompact(player.gems);
-
-      const xpPct = Math.min(100, (player.xp / (player.level * 50)) * 100);
-      document.getElementById('hud-xp-bar').style.width = `${xpPct}%`;
-
-      document.getElementById('txt-hunger').innerText = `${Math.round(pet.hunger)}%`;
-      document.getElementById('txt-clean').innerText = `${Math.round(pet.cleanliness)}%`;
-      document.getElementById('txt-happy').innerText = `${Math.round(pet.happiness)}%`;
-
-      document.getElementById('bar-hunger').style.width = `${pet.hunger}%`;
-      document.getElementById('bar-clean').style.width = `${pet.cleanliness}%`;
-      document.getElementById('bar-happy').style.width = `${pet.happiness}%`;
-
-      document.getElementById('dirt-layer').style.opacity = ((100 - pet.cleanliness) / 100) * 0.8;
-      document.getElementById('quest-pets-txt').innerText = `${Math.min(5, player.petCount)}/5`;
-      document.getElementById('quest-feed-txt').innerText = `${Math.min(3, player.feedCount)}/3`;
-    }
-
-    // Фоновое падение характеристик тамагочи
-    setInterval(() => {
-      pet.hunger = Math.max(0, pet.hunger - 0.25);
-      pet.cleanliness = Math.max(0, pet.cleanliness - 0.18);
-      pet.happiness = Math.max(0, pet.happiness - 0.2);
-
-      // Работа гаджетов
-      if (player.inventory.gadgets.feeder && pet.hunger < 50) {
-        pet.hunger = 85;
-        toast('🤖 Автокормушка накормила рыбку!');
-      }
-      if (player.inventory.gadgets.filter && pet.cleanliness < 95) {
-        pet.cleanliness = 100;
-      }
-
-      updateHUD();
-      saveGame();
-    }, 2000);
-
-    /* =====================================================================
-       3. ДЕЙСТВИЯ, МАГАЗИН И ИНВЕНТАРЬ
-       ===================================================================== */
-    function userAction(act) {
-      if (act === 'feed') {
-        if (pet.hunger >= 98) { toast('Петушок уже сыт!'); return; }
-        for (let i = 0; i < 3; i++) foods.push(new Food(betta.x + (Math.random() - 0.5) * 60, 20 + Math.random() * 20));
-        pet.hunger = Math.min(100, pet.hunger + 25);
-        player.coins += 5;
-        player.feedCount++;
-        addXP(8);
-        sound.pop();
-        toast('Вы покормили рыбку! (+5 🪙)');
-      } else if (act === 'clean') {
-        pet.cleanliness = 100;
-        sound.pop();
-        player.coins += 10;
-        addXP(10);
-        toast('Аквариум сияет чистотой! (+10 🪙)');
-      } else if (act === 'pet') {
-        pet.happiness = Math.min(100, pet.happiness + 20);
-        player.petCount++;
-        betta.giveThrust(0.7);
-        addXP(6);
-        spawnHearts(betta.x, betta.y);
-        sound.heart();
-        toast('Петушок виляет хвостиком от ласки! 💖');
-      }
-      updateHUD();
-      saveGame();
-    }
-
-    function simulateDonate(title, priceRub, gemsReward) {
-      sound.coin();
-      const confirmed = confirm(`💳 ОПЛАТА ПОДДЕРЖКИ\n\nОформить пакет "${title}" за ${priceRub} ₽?\nВам будет начислено: +${gemsReward} 💎 Жемчужин!`);
-      if (confirmed) {
-        player.gems += gemsReward;
-        if (title.includes('VIP')) {
-          if (!player.inventory.skins.includes('gold')) player.inventory.skins.push('gold');
-          player.skin = 'gold';
-        }
-        sound.gem();
-        toast(`СПАСИБО ЗА ПОДДЕРЖКУ! Начислено +${gemsReward} 💎`);
-        updateHUD();
-        updateShopUI();
-        saveGame();
-      }
-    }
-
-    // Логика покупки и смены скинов
-    function handleSkinClick(skinId, priceGems) {
-      if (!player.inventory.skins.includes(skinId)) {
-        if (player.gems < priceGems) {
-          toast('Недостаточно 💎! Загляните в раздел доната.');
-          return;
-        }
-        player.gems -= priceGems;
-        player.inventory.skins.push(skinId);
-        player.skin = skinId;
-        sound.gem();
-        toast('Скин куплен и надет! 🐟');
-      } else {
-        player.skin = skinId;
-        sound.pop();
-        toast('Скин надет!');
-      }
-      updateHUD();
-      updateShopUI();
-      saveGame();
-    }
-
-    function equipSkin(skinId) {
-      player.skin = skinId;
-      sound.pop();
-      updateShopUI();
-      saveGame();
-    }
-
-    // Логика покупки и включения декораций
-    function handleDecorClick(decorId, priceCoins) {
-      if (!player.inventory.decor[decorId]) {
-        if (player.coins < priceCoins) {
-          toast('Недостаточно 🪙 монет!');
-          return;
-        }
-        player.coins -= priceCoins;
-        player.inventory.decor[decorId] = true;
-        sound.coin();
-        toast('Декорация установлена на дно!');
-      } else {
-        player.inventory.decor[decorId] = !player.inventory.decor[decorId];
-        sound.pop();
-        toast(player.inventory.decor[decorId] ? 'Декор установлен' : 'Декор убран');
-      }
-      updateHUD();
-      updateShopUI();
-      saveGame();
-    }
-
-    // Покупка гаджетов
-    function handleGadgetClick(gadgetId, priceCoins) {
-      if (player.inventory.gadgets[gadgetId]) {
-        toast('Улучшение уже активно!');
-        return;
-      }
-      if (player.coins < priceCoins) {
-        toast('Недостаточно 🪙 монет!');
-        return;
-      }
-      player.coins -= priceCoins;
-      player.inventory.gadgets[gadgetId] = true;
-      sound.coin();
-      toast('Гаджет успешно куплен и работает!');
-      updateHUD();
-      updateShopUI();
-      saveGame();
-    }
-
-    function setTheme(themeId) {
-      player.theme = themeId;
-      sound.pop();
-      toast('Тема аквариума изменена!');
-      updateShopUI();
-      saveGame();
-    }
-
-    function claimDaily() {
-      const now = Date.now();
-      if (now - player.lastDaily < 24 * 3600 * 1000) {
-        toast('Вы уже забрали ежедневный бонус! Ждите завтра.');
-        return;
-      }
-      player.coins += 100;
-      player.lastDaily = now;
-      sound.coin();
-      toast('Получено +100 🪙 монет!');
-      updateHUD();
-      saveGame();
-    }
-
-    // Динамическое обновление кнопок в магазине
-    function updateShopUI() {
-      // Кнопки скинов
-      const skins = [
-        { id: 'classic', price: 0 },
-        { id: 'sakura', price: 80 },
-        { id: 'gold', price: 150 },
-        { id: 'samurai', price: 120 },
-        { id: 'cyber', price: 200 }
-      ];
-      skins.forEach(s => {
-        const btn = document.getElementById(`btn-skin-${s.id}`);
-        if (!btn) return;
-        if (player.skin === s.id) {
-          btn.innerText = '✓ НАДЕТО';
-          btn.className = 'btn-action equipped';
-        } else if (player.inventory.skins.includes(s.id)) {
-          btn.innerText = 'НАДЕТЬ';
-          btn.className = 'btn-action';
-        } else {
-          btn.innerText = `${s.price} 💎`;
-          btn.className = 'btn-action';
-        }
-      });
-
-      // Декор
-      ['torii', 'crystal', 'bonsai'].forEach(d => {
-        const btn = document.getElementById(`btn-decor-${d}`);
-        if (!btn) return;
-        if (player.inventory.decor[d]) {
-          btn.innerText = 'УБРАТЬ';
-          btn.className = 'btn-action equipped';
-        } else {
-          btn.innerText = d === 'torii' ? '150 🪙' : d === 'crystal' ? '200 🪙' : '250 🪙';
-          btn.className = 'btn-action coin-btn';
-        }
-      });
-
-      // Гаджеты
-      const fBtn = document.getElementById('btn-gadget-feeder');
-      if (fBtn && player.inventory.gadgets.feeder) {
-        fBtn.innerText = '✓ АКТИВНО';
-        fBtn.className = 'btn-action equipped';
-      }
-      const flBtn = document.getElementById('btn-gadget-filter');
-      if (flBtn && player.inventory.gadgets.filter) {
-        flBtn.innerText = '✓ АКТИВНО';
-        flBtn.className = 'btn-action equipped';
-      }
-
-      // Темы
-      ['deep', 'tokyo', 'emerald', 'sunset'].forEach(t => {
-        const btn = document.getElementById(`btn-theme-${t}`);
-        if (!btn) return;
-        if (player.theme === t) {
-          btn.innerText = '✓ НАДЕТО';
-          btn.className = 'btn-action equipped';
-        } else {
-          btn.innerText = 'ВЫБРАТЬ';
-          btn.className = 'btn-action';
-        }
-      });
-    }
-
-    /* =====================================================================
-       4. UI ШТОРКИ И СТАРТ
-       ===================================================================== */
-    function openSheet(id) {
-      document.getElementById('sheet-' + id).classList.add('open');
-      sound.pop();
-    }
-
-    function closeSheet(id) {
-      document.getElementById('sheet-' + id).classList.remove('open');
-    }
-
-    function switchTab(tab) {
-      sound.pop();
-    }
-
-    function toast(txt) {
-      const el = document.getElementById('toast');
-      el.innerText = txt;
-      el.classList.add('show');
-      clearTimeout(window.tTimer);
-      window.tTimer = setTimeout(() => el.classList.remove('show'), 3200);
-    }
-
-    function handleStartApp() {
-      const name = document.getElementById('auth-input-name').value.trim() || 'Аквариумист';
-      document.getElementById('auth-screen').style.display = 'none';
-      document.getElementById('app-header').style.display = 'flex';
-      document.getElementById('vitals-pill').style.display = 'flex';
-      document.getElementById('quick-actions').style.display = 'flex';
-      document.getElementById('bottom-dock').style.display = 'flex';
-      loadGame(name);
-      sound.gem();
-      toast(`Добро пожаловать, ${name}!`);
-    }
-
-    /* =====================================================================
-       5. КАНВАС ДВИЖОК: ПЕТУШОК, ДЕКОРАЦИИ И ЧАСТИЦЫ
-       ===================================================================== */
-    const canvas = document.getElementById('aquarium');
-    const ctx = canvas.getContext('2d');
-    ctx.imageSmoothingEnabled = false;
-
-    // Частицы сердечек
-    const hearts = [];
-    function spawnHearts(x, y) {
-      for (let i = 0; i < 4; i++) {
-        hearts.push({ x, y, vy: -1.2 - Math.random(), alpha: 1 });
-      }
-    }
-
-    // Корм
-    const foods = [];
-    class Food {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.vy = 0.35 + Math.random() * 0.2;
-        this.eaten = false;
-      }
-      update() { this.y += this.vy; }
-      draw() {
-        ctx.fillStyle = '#f59e0b';
-        ctx.fillRect(Math.floor(this.x), Math.floor(this.y), 4, 3);
-      }
-    }
-
-    // Пузырьки
-    const bubbles = [];
-    for (let i = 0; i < 28; i++) {
-      bubbles.push({
-        x: Math.random() * 480,
-        y: Math.random() * 760,
-        speed: 0.3 + Math.random() * 0.5
-      });
-    }
-
-    // Петушок с поддержкой 5 скинов
-    class MajesticBetta {
+    /* ========================================================
+       1. 8-БИТНЫЙ АУДИО СИНТЕЗАТОР (WEB AUDIO API)
+       ======================================================== */
+    class RetroAudio {
       constructor() {
-        this.x = 240;
-        this.y = 380;
-        this.speed = 0.2;
-        this.angle = 0;
-        this.targetAngle = 0;
-        this.targetX = 240;
-        this.targetY = 380;
-        this.time = 0;
-        this.strokeCD = 0;
+        this.ctx = null;
+        this.muted = false;
       }
-
-      giveThrust(val = 0.8) {
-        this.speed = Math.min(1.8, this.speed + val);
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
       }
-
-      update() {
-        this.time += 0.04;
-
-        // Поиск ближайшего корма
-        let targetFood = null;
-        let minD = 9999;
-        for (let f of foods) {
-          if (!f.eaten && f.y < 720) {
-            let d = Math.hypot(f.x - this.x, f.y - this.y);
-            if (d < minD) { minD = d; targetFood = f; }
+      playTone(freq, type = 'square', duration = 0.08, rampTo = null) {
+        if (this.muted) return;
+        this.init();
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          if (rampTo) {
+            osc.frequency.exponentialRampToValueAtTime(rampTo, this.ctx.currentTime + duration);
           }
-        }
-
-        if (targetFood) {
-          this.targetX = targetFood.x;
-          this.targetY = targetFood.y;
-          if (minD < 16) {
-            targetFood.eaten = true;
-            sound.eat();
-            addXP(4);
-          }
-        } else {
-          // Плавное патрулирование
-          if (Math.hypot(this.targetX - this.x, this.targetY - this.y) < 40 || Math.random() < 0.005) {
-            this.targetX = 60 + Math.random() * 360;
-            this.targetY = 130 + Math.random() * 500;
-          }
-        }
-
-        const dx = this.targetX - this.x;
-        const dy = this.targetY - this.y;
-        this.targetAngle = Math.atan2(dy, dx);
-
-        let diff = this.targetAngle - this.angle;
-        while (diff < -Math.PI) diff += Math.PI * 2;
-        while (diff > Math.PI) diff -= Math.PI * 2;
-        this.angle += diff * 0.035;
-
-        this.strokeCD -= 0.016;
-        if (this.strokeCD <= 0 && Math.hypot(dx, dy) > 40) {
-          this.giveThrust(0.5);
-          this.strokeCD = 1.3 + Math.random() * 1.5;
-        }
-
-        this.speed *= 0.98;
-        if (this.speed < 0.15) this.speed = 0.15;
-
-        this.x += Math.cos(this.angle) * this.speed;
-        this.y += Math.sin(this.angle) * this.speed + Math.sin(this.time * 2) * 0.3;
-
-        this.x = Math.max(50, Math.min(430, this.x));
-        this.y = Math.max(120, Math.min(680, this.y));
+          gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e){}
       }
+      soundEat() {
+        this.playTone(300, 'triangle', 0.08, 600);
+        setTimeout(() => this.playTone(600, 'square', 0.1, 900), 80);
+      }
+      soundClean() {
+        this.playTone(800, 'sine', 0.05, 1200);
+        setTimeout(() => this.playTone(1200, 'sine', 0.08, 1600), 60);
+      }
+      soundPlay() {
+        this.playTone(440, 'square', 0.06, 880);
+        setTimeout(() => this.playTone(660, 'square', 0.09, 1100), 70);
+      }
+      soundLight() {
+        this.playTone(200, 'sawtooth', 0.15, 100);
+      }
+      soundLevel() {
+        [523, 659, 783, 1046].forEach((f, i) => {
+          setTimeout(() => this.playTone(f, 'square', 0.1), i * 90);
+        });
+      }
+    }
+    const audio = new RetroAudio();
 
-      draw() {
-        const px = Math.floor(this.x);
-        const py = Math.floor(this.y);
+    /* ========================================================
+       2. АККАУНТЫ И LOCAL STORAGE
+       ======================================================== */
+    let currentUser = null;
+    let authMode = 'login'; // 'login' или 'register'
 
-        ctx.save();
-        ctx.translate(px, py);
-        ctx.rotate(this.angle);
+    function loadUsers() {
+      return JSON.parse(localStorage.getItem('cyberfish_users') || '{}');
+    }
+    function saveUsers(users) {
+      localStorage.setItem('cyberfish_users', JSON.stringify(users));
+    }
 
-        if (Math.cos(this.angle) < 0) {
-          ctx.scale(1, -1);
+    const authModal = document.getElementById('authModal');
+    const authForm = document.getElementById('authForm');
+    const authUsername = document.getElementById('authUsername');
+    const authPassword = document.getElementById('authPassword');
+    const authError = document.getElementById('authError');
+    const tabLogin = document.getElementById('tabLogin');
+    const tabRegister = document.getElementById('tabRegister');
+    const authSubmit = document.getElementById('authSubmit');
+    const profileBtn = document.getElementById('profileBtn');
+
+    tabLogin.onclick = () => {
+      authMode = 'login';
+      tabLogin.classList.add('active');
+      tabRegister.classList.remove('active');
+      authSubmit.innerText = 'ПОДКЛЮЧИТЬСЯ';
+      authError.style.display = 'none';
+    };
+
+    tabRegister.onclick = () => {
+      authMode = 'register';
+      tabRegister.classList.add('active');
+      tabLogin.classList.remove('active');
+      authSubmit.innerText = 'ЗАРЕГИСТРИРОВАТЬ';
+      authError.style.display = 'none';
+    };
+
+    authForm.onsubmit = (e) => {
+      e.preventDefault();
+      const u = authUsername.value.trim().toUpperCase();
+      const p = authPassword.value;
+      const users = loadUsers();
+
+      if (authMode === 'register') {
+        if (users[u]) {
+          showAuthError('ПОЗЫВНОЙ УЖЕ ЗАНЯТ!');
+          return;
         }
-
-        // Палитры для 5 скинов
-        let cBody = '#0f172a', cScale = '#1e40af', cFin = '#ff007f', cTip = '#00f5d4';
-        if (player.skin === 'sakura') {
-          cBody = '#500724'; cScale = '#be185d'; cFin = '#f472b6'; cTip = '#fed7aa';
-        } else if (player.skin === 'gold') {
-          cBody = '#78350f'; cScale = '#d97706'; cFin = '#fbbf24'; cTip = '#fef08a';
-        } else if (player.skin === 'samurai') {
-          cBody = '#0a0a0c'; cScale = '#374151'; cFin = '#dc2626'; cTip = '#ffffff';
-        } else if (player.skin === 'cyber') {
-          cBody = '#180033'; cScale = '#a855f7'; cFin = '#3b82f6'; cTip = '#38ef7d';
+        users[u] = {
+          password: p,
+          fishState: createNewFishState()
+        };
+        saveUsers(users);
+        loginUser(u);
+      } else {
+        if (!users[u] || users[u].password !== p) {
+          showAuthError('НЕВЕРНЫЙ ПОЗЫВНОЙ ИЛИ ПАРОЛЬ');
+          return;
         }
+        loginUser(u);
+      }
+    };
 
-        // 1. Хвост (Halfmoon Veil)
-        for (let r = 0; r < 11; r++) {
-          const spread = (r - 5) * 0.15;
-          const wave = Math.sin(this.time * 2.8 - r * 0.3) * 6;
-          const len = 42 - Math.abs(r - 5) * 2;
+    function showAuthError(msg) {
+      authError.innerText = msg;
+      authError.style.display = 'block';
+    }
 
-          ctx.strokeStyle = (r % 2 === 0) ? cTip : cFin;
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(-18, 0);
-          ctx.quadraticCurveTo(-18 - len * 0.5, spread * 24 + wave * 0.6, -18 - len, spread * 38 + wave);
-          ctx.stroke();
-        }
+    function loginUser(username) {
+      currentUser = username;
+      profileBtn.innerText = `👤 ${username.substring(0, 6)}`;
+      authModal.classList.add('hidden');
+      loadFishState();
+      audio.soundLevel();
+      setMessage(`ПРИВЕТСТВУЕМ, ПИЛОТ ${username}! // SYSTEM ONLINE`);
+    }
 
-        // 2. Спинной плавник
-        for (let d = 0; d < 7; d++) {
-          const dWave = Math.sin(this.time * 2.5 + d * 0.4) * 4;
-          ctx.strokeStyle = cFin;
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(-12 + d * 3, -6);
-          ctx.lineTo(-16 + d * 2, -22 + dWave);
-          ctx.stroke();
-        }
+    profileBtn.onclick = () => {
+      authModal.classList.remove('hidden');
+    };
 
-        // 3. Брюшные нити-усики
-        const vWave = Math.sin(this.time * 3.5) * 4;
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(2, 6);
-        ctx.lineTo(-2, 26 + vWave);
-        ctx.stroke();
+    function createNewFishState() {
+      return {
+        hunger: 80,
+        cleanliness: 90,
+        happiness: 75,
+        energy: 100,
+        level: 1,
+        experience: 0,
+        sleeping: false,
+        lastTick: Date.now()
+      };
+    }
 
-        // 4. Тело
-        ctx.fillStyle = cBody;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, 20, 8, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Чешуя
-        ctx.fillStyle = cScale;
-        ctx.fillRect(-6, -3, 3, 3);
-        ctx.fillRect(0, -2, 3, 3);
-        ctx.fillRect(-3, 1, 3, 3);
-
-        // 5. Глаз
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(11, -3, 4, 4);
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(12, -3, 2, 3);
-
-        ctx.restore();
+    function saveFishState() {
+      if (!currentUser) return;
+      const users = loadUsers();
+      if (users[currentUser]) {
+        users[currentUser].fishState = {
+          hunger: pet.hunger,
+          cleanliness: pet.cleanliness,
+          happiness: pet.happiness,
+          energy: pet.energy,
+          level: pet.level,
+          experience: pet.experience,
+          sleeping: pet.sleeping,
+          lastTick: Date.now()
+        };
+        saveUsers(users);
       }
     }
 
-    const betta = new MajesticBetta();
+    function loadFishState() {
+      if (!currentUser) return;
+      const users = loadUsers();
+      if (users[currentUser] && users[currentUser].fishState) {
+        const state = users[currentUser].fishState;
+        pet.hunger = state.hunger;
+        pet.cleanliness = state.cleanliness;
+        pet.happiness = state.happiness;
+        pet.energy = state.energy;
+        pet.level = state.level || 1;
+        pet.experience = state.experience || 0;
+        pet.sleeping = state.sleeping || false;
+        applyNightMode(pet.sleeping);
+        updateUI();
+      }
+    }
 
-    // Интерактив тача / клика по воде
+    /* ========================================================
+       3. СИСТЕМА ТАМАГОЧИ И ЛОГИКА
+       ======================================================== */
+    const pet = {
+      hunger: 80,
+      cleanliness: 85,
+      happiness: 70,
+      energy: 95,
+      level: 1,
+      experience: 0,
+      sleeping: false
+    };
+
+    const statusMessage = document.getElementById('statusMessage');
+    function setMessage(text) {
+      statusMessage.innerText = text;
+    }
+
+    function updateUI() {
+      document.getElementById('hungerVal').innerText = `${Math.round(pet.hunger)}%`;
+      document.getElementById('cleanVal').innerText = `${Math.round(pet.cleanliness)}%`;
+      document.getElementById('joyVal').innerText = `${Math.round(pet.happiness)}%`;
+      document.getElementById('energyVal').innerText = `${Math.round(pet.energy)}%`;
+
+      document.getElementById('hungerBar').style.width = `${pet.hunger}%`;
+      document.getElementById('cleanBar').style.width = `${pet.cleanliness}%`;
+      document.getElementById('joyBar').style.width = `${pet.happiness}%`;
+      document.getElementById('energyBar').style.width = `${pet.energy}%`;
+    }
+
+    // Периодическое изменение параметров
+    setInterval(() => {
+      if (!currentUser) return;
+
+      if (!pet.sleeping) {
+        pet.hunger = Math.max(0, pet.hunger - 0.7);
+        pet.cleanliness = Math.max(0, pet.cleanliness - 0.4);
+        pet.happiness = Math.max(0, pet.happiness - 0.5);
+        pet.energy = Math.max(0, pet.energy - 0.3);
+      } else {
+        // Во сне энергия растет, голод уменьшается медленно
+        pet.energy = Math.min(100, pet.energy + 2);
+        pet.hunger = Math.max(0, pet.hunger - 0.2);
+      }
+
+      // Случайное событие загрязнения
+      if (Math.random() < 0.08 && pet.cleanliness < 70) {
+        addDebris();
+      }
+
+      // Состояния самочувствия
+      if (pet.hunger < 25) {
+        setMessage('РЫБКА ОЧЕНЬ ГОЛОДНА! // 魚はお腹が空いています');
+      } else if (pet.cleanliness < 25) {
+        setMessage('ВОДА ЗАГРЯЗНЕНА! ВКЛЮЧИТЕ ОЧИСТКУ // 水が汚れています');
+      }
+
+      updateUI();
+      saveFishState();
+    }, 2500);
+
+    /* ========================================================
+       4. CANVAS ДВИЖОК: КИБЕР-АКВАРИУМ И РЫБКА
+       ======================================================== */
+    const canvas = document.getElementById('aquariumCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Разрешение Canvas для ретро-четкости
+    canvas.width = 400;
+    canvas.height = 250;
+
+    let foods = [];
+    let bubbles = [];
+    let debrisList = [];
+
+    // Создаем неоновые пузырьки
+    for(let i=0; i<15; i++) {
+      bubbles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2 + 1,
+        speed: Math.random() * 0.8 + 0.3
+      });
+    }
+
+    function addDebris() {
+      if (debrisList.length < 8) {
+        debrisList.push({
+          x: Math.random() * (canvas.width - 40) + 20,
+          y: Math.random() * (canvas.height - 40) + 20,
+          size: Math.random() * 3 + 2
+        });
+      }
+    }
+
+    const fish = {
+      x: 200,
+      y: 125,
+      targetX: 200,
+      targetY: 125,
+      vx: 0,
+      vy: 0,
+      angle: 0,
+      wiggle: 0,
+      baseColor: '#00f0ff',
+      glowColor: 'rgba(0, 240, 255, 0.6)'
+    };
+
+    // Случайное блуждание рыбки
+    setInterval(() => {
+      if (pet.sleeping) {
+        fish.targetX = canvas.width / 2;
+        fish.targetY = canvas.height * 0.7;
+        return;
+      }
+      
+      if (foods.length > 0) {
+        // Плыть к ближайшей еде
+        fish.targetX = foods[0].x;
+        fish.targetY = foods[0].y;
+      } else {
+        fish.targetX = 40 + Math.random() * (canvas.width - 80);
+        fish.targetY = 40 + Math.random() * (canvas.height - 80);
+      }
+    }, 1800);
+
+    function drawPixelFish(x, y, angle, wiggle, isSleeping) {
+      ctx.save();
+      ctx.translate(x, y);
+      
+      // Разворот влево/вправо в зависимости от направления
+      const facingLeft = Math.cos(angle) < 0;
+      ctx.scale(facingLeft ? -1 : 1, 1);
+
+      // Неоновое свечение кибер-рыбки
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = pet.happiness > 60 ? '#00f0ff' : '#ff2a85';
+
+      const bodyColor = pet.cleanliness < 35 ? '#809988' : '#00f0ff';
+      const finColor = pet.hunger < 30 ? '#ff85a1' : '#ff2a85';
+
+      // Хвостовой плавник (колеблется при плавании)
+      const tailWiggle = Math.sin(wiggle) * 4;
+      ctx.fillStyle = finColor;
+      ctx.beginPath();
+      ctx.moveTo(-16, 0);
+      ctx.lineTo(-26 + tailWiggle, -10);
+      ctx.lineTo(-22 + tailWiggle, 0);
+      ctx.lineTo(-26 + tailWiggle, 10);
+      ctx.closePath();
+      ctx.fill();
+
+      // Верхний кибер-плавник
+      ctx.fillStyle = '#ffe600';
+      ctx.beginPath();
+      ctx.moveTo(-6, -6);
+      ctx.lineTo(2, -14);
+      ctx.lineTo(8, -6);
+      ctx.closePath();
+      ctx.fill();
+
+      // Тело рыбки (пиксельная стилизация в виде полигона)
+      ctx.fillStyle = bodyColor;
+      ctx.beginPath();
+      ctx.moveTo(18, 0); // нос
+      ctx.lineTo(6, -9);
+      ctx.lineTo(-14, -6);
+      ctx.lineTo(-16, 0);
+      ctx.lineTo(-14, 6);
+      ctx.lineTo(6, 9);
+      ctx.closePath();
+      ctx.fill();
+
+      // Глаз
+      if (isSleeping) {
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(8, -2);
+        ctx.lineTo(13, -2);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(8, -4, 5, 5);
+        ctx.fillStyle = '#050510';
+        ctx.fillRect(10, -3, 2, 3);
+      }
+
+      // Неоновые чешуйки/полосы кибер-дизайна
+      ctx.fillStyle = '#ffe600';
+      ctx.fillRect(-2, -4, 2, 8);
+      ctx.fillRect(-8, -3, 2, 6);
+
+      ctx.restore();
+    }
+
+    function render() {
+      // Очистка и отрисовка кибер-воды с градиентом
+      const waterGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      if (pet.sleeping) {
+        waterGrad.addColorStop(0, '#030814');
+        waterGrad.addColorStop(1, '#020308');
+      } else if (pet.cleanliness < 40) {
+        waterGrad.addColorStop(0, '#101c18');
+        waterGrad.addColorStop(1, '#06130b');
+      } else {
+        waterGrad.addColorStop(0, '#04162e');
+        waterGrad.addColorStop(1, '#020914');
+      }
+      ctx.fillStyle = waterGrad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Неоновые водоросли на дне
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = '#05ffa1';
+      ctx.fillStyle = '#05ffa155';
+      for (let i = 20; i < canvas.width; i += 45) {
+        const h = Math.sin(Date.now() * 0.002 + i) * 8 + 35;
+        ctx.beginPath();
+        ctx.moveTo(i, canvas.height);
+        ctx.quadraticCurveTo(i + 10, canvas.height - h / 2, i + Math.sin(Date.now()*0.003 + i)*6, canvas.height - h);
+        ctx.lineTo(i + 4, canvas.height);
+        ctx.fill();
+      }
+
+      // Пузырьки воздуха
+      ctx.shadowBlur = 4;
+      ctx.shadowColor = '#00f0ff';
+      ctx.fillStyle = 'rgba(0, 240, 255, 0.5)';
+      bubbles.forEach(b => {
+        b.y -= b.speed;
+        if (b.y < -5) {
+          b.y = canvas.height + 5;
+          b.x = Math.random() * canvas.width;
+        }
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Грязь/водоросли при низком фильтре
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#486842';
+      debrisList.forEach(d => {
+        ctx.fillRect(d.x, d.y, d.size, d.size);
+      });
+
+      // Отрисовка еды
+      foods.forEach((food, index) => {
+        food.y += food.speed;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = '#ffe600';
+        ctx.fillStyle = '#ffe600';
+        ctx.fillRect(food.x - 2, food.y - 2, 5, 5);
+
+        // Проверка поедания рыбой
+        const dist = Math.hypot(fish.x - food.x, fish.y - food.y);
+        if (dist < 18) {
+          foods.splice(index, 1);
+          pet.hunger = Math.min(100, pet.hunger + 15);
+          pet.happiness = Math.min(100, pet.happiness + 5);
+          audio.soundEat();
+          setMessage('ВКУСНО! 魚は満足しています (+FOOD)');
+          updateUI();
+          saveFishState();
+        }
+
+        // Удаление со дна
+        if (food.y > canvas.height - 10) {
+          foods.splice(index, 1);
+          pet.cleanliness = Math.max(0, pet.cleanliness - 3);
+          addDebris();
+        }
+      });
+
+      // Плавное движение рыбки
+      const dx = fish.targetX - fish.x;
+      const dy = fish.targetY - fish.y;
+      fish.vx += dx * 0.002;
+      fish.vy += dy * 0.002;
+      fish.vx *= 0.94;
+      fish.vy *= 0.94;
+      fish.x += fish.vx;
+      fish.y += fish.vy;
+
+      fish.angle = Math.atan2(fish.vy, fish.vx);
+      fish.wiggle += Math.hypot(fish.vx, fish.vy) * 0.8 + 0.15;
+
+      drawPixelFish(fish.x, fish.y, fish.angle, fish.wiggle, pet.sleeping);
+
+      // Иконка спящей рыбки "Zzz"
+      if (pet.sleeping) {
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = '#9d4edd';
+        ctx.fillStyle = '#ffe600';
+        ctx.font = '10px "Press Start 2P"';
+        const zOffset = Math.sin(Date.now() * 0.004) * 4;
+        ctx.fillText("Zzz...", fish.x + 10, fish.y - 15 + zOffset);
+      }
+
+      requestAnimationFrame(render);
+    }
+
+    render();
+
+    /* ========================================================
+       5. УПРАВЛЕНИЕ И ИНТЕРАКТИВНОСТЬ
+       ======================================================== */
+    // Клик по аквариуму — пустить пузыри и направить рыбку
     canvas.addEventListener('pointerdown', (e) => {
       const rect = canvas.getBoundingClientRect();
-      const clickX = (e.clientX - rect.left) * (480 / rect.width);
-      const clickY = (e.clientY - rect.top) * (760 / rect.height);
+      const clickX = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const clickY = (e.clientY - rect.top) * (canvas.height / rect.height);
 
-      if (Math.hypot(clickX - betta.x, clickY - betta.y) < 50) {
-        userAction('pet');
-      } else {
-        betta.targetX = clickX;
-        betta.targetY = clickY;
-        betta.giveThrust(0.5);
-        sound.pop();
-        for (let i = 0; i < 4; i++) {
-          bubbles.push({ x: clickX + (Math.random()-0.5)*12, y: clickY, speed: 0.8 });
+      if (!pet.sleeping) {
+        fish.targetX = clickX;
+        fish.targetY = clickY;
+        audio.playTone(800, 'sine', 0.04);
+        
+        // Создать всплеск пузырей
+        for(let i=0; i<6; i++) {
+          bubbles.push({
+            x: clickX + (Math.random()-0.5)*20,
+            y: clickY + (Math.random()-0.5)*20,
+            r: Math.random() * 3 + 1,
+            speed: Math.random() * 1.5 + 0.8
+          });
         }
       }
     });
 
-    // Главный цикл рендеринга
-    function loop() {
-      // 1. Градиент темы фона
-      let g1 = '#001438', g2 = '#000617';
-      if (player.theme === 'tokyo') { g1 = '#2b073b'; g2 = '#080112'; }
-      else if (player.theme === 'emerald') { g1 = '#042f2e'; g2 = '#021614'; }
-      else if (player.theme === 'sunset') { g1 = '#4c0519'; g2 = '#1c0208'; }
-
-      const grad = ctx.createLinearGradient(0, 0, 0, 760);
-      grad.addColorStop(0, g1);
-      grad.addColorStop(1, g2);
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 480, 760);
-
-      // 2. Песчаное дно
-      ctx.fillStyle = '#4a2f1b';
-      ctx.fillRect(0, 735, 480, 25);
-
-      // 3. Декорации на дне
-      if (player.inventory.decor.torii) {
-        ctx.fillStyle = '#dc2626';
-        ctx.fillRect(70, 670, 6, 65);
-        ctx.fillRect(120, 670, 6, 65);
-        ctx.fillRect(60, 675, 76, 6);
-        ctx.fillRect(64, 685, 68, 4);
+    // 🍙 Кнопка «КОРМ»
+    document.getElementById('feedBtn').onclick = () => {
+      if (pet.sleeping) {
+        setMessage('РЫБКА СПИТ! НЕ БЕСПОКОЙТЕ // 魚は寝ています');
+        return;
       }
-      if (player.inventory.decor.crystal) {
-        ctx.fillStyle = '#00f5d4';
-        ctx.beginPath();
-        ctx.moveTo(370, 735);
-        ctx.lineTo(380, 685);
-        ctx.lineTo(390, 735);
-        ctx.fill();
+      if (foods.length >= 4) {
+        setMessage('СЛИШКОМ МНОГО КОРМА В ВОДЕ!');
+        return;
       }
-      if (player.inventory.decor.bonsai) {
-        ctx.fillStyle = '#854d0e';
-        ctx.fillRect(230, 700, 8, 35);
-        ctx.fillStyle = '#22c55e';
-        ctx.beginPath();
-        ctx.arc(234, 692, 14, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // 4. Пузыри
-      ctx.fillStyle = '#7dd3fc';
-      bubbles.forEach(b => {
-        b.y -= b.speed;
-        if (b.y < -5) { b.y = 740; b.x = Math.random() * 480; }
-        ctx.fillRect(Math.floor(b.x), Math.floor(b.y), 2, 2);
+      foods.push({
+        x: 40 + Math.random() * (canvas.width - 80),
+        y: 10,
+        speed: Math.random() * 0.6 + 0.6
       });
+      audio.soundEat();
+      setMessage('КОРМ ДОБАВЛЕН // 餌を与えました');
+    };
 
-      // 5. Корм
-      for (let i = foods.length - 1; i >= 0; i--) {
-        const f = foods[i];
-        f.update();
-        f.draw();
-        if (f.eaten || f.y > 735) foods.splice(i, 1);
+    // 🫧 Кнопка «ФИЛЬТР»
+    document.getElementById('cleanBtn').onclick = () => {
+      pet.cleanliness = Math.min(100, pet.cleanliness + 30);
+      debrisList = [];
+      audio.soundClean();
+      updateUI();
+      saveFishState();
+      setMessage('НЕОНОВЫЙ ФИЛЬТР ОЧИСТИЛ ВОДУ // 浄化完了');
+    };
+
+    // 🎮 Кнопка «ИГРА»
+    document.getElementById('playBtn').onclick = () => {
+      if (pet.sleeping) {
+        setMessage('РЫБКА СПИТ! // 睡眠中');
+        return;
       }
+      pet.happiness = Math.min(100, pet.happiness + 20);
+      pet.energy = Math.max(0, pet.energy - 8);
+      
+      // Рыбка делает забавное сальто-ускорение
+      fish.vx = (Math.random() - 0.5) * 12;
+      fish.vy = -6;
+      audio.soundPlay();
+      updateUI();
+      saveFishState();
+      setMessage('ВЫ ПОИГРАЛИ С РЫБКОЙ! РАДОСТЬ +20 // 楽しい！');
+    };
 
-      // 6. Сердечки
-      for (let i = hearts.length - 1; i >= 0; i--) {
-        const h = hearts[i];
-        h.y += h.vy;
-        h.alpha -= 0.02;
-        ctx.fillStyle = `rgba(255, 0, 127, ${h.alpha})`;
-        ctx.font = '12px sans-serif';
-        ctx.fillText('💖', h.x, h.y);
-        if (h.alpha <= 0) hearts.splice(i, 1);
+    // 💡 Кнопка «НЕОН / СОН»
+    function applyNightMode(isNight) {
+      const crt = document.getElementById('crtScreen');
+      if (isNight) {
+        crt.classList.add('night-overlay');
+      } else {
+        crt.classList.remove('night-overlay');
       }
-
-      // 7. Петушок
-      betta.update();
-      betta.draw();
-
-      requestAnimationFrame(loop);
     }
 
-    loop();
+    document.getElementById('sleepBtn').onclick = () => {
+      pet.sleeping = !pet.sleeping;
+      applyNightMode(pet.sleeping);
+      audio.soundLight();
+      saveFishState();
+      if (pet.sleeping) {
+        setMessage('НОЧНОЙ НЕОН ВКЛЮЧЕН: РЫБКА ОТДЫХАЕТ // おやすみ');
+      } else {
+        setMessage('ДНЕВНОЙ РЕЖИМ АКТИВИРОВАН // おはよう！');
+      }
+    };
+
+    // Звук переключатель
+    const soundToggle = document.getElementById('soundToggle');
+    soundToggle.onclick = () => {
+      audio.muted = !audio.muted;
+      soundToggle.innerText = audio.muted ? '🔇 MUTE' : '🔊 BGM';
+      if (!audio.muted) audio.soundLevel();
+    };
+
+    // Автоматическая проверка: если уже заходили, восстанавливаем сессию
+    window.onload = () => {
+      const users = loadUsers();
+      const userKeys = Object.keys(users);
+      if (userKeys.length > 0) {
+        loginUser(userKeys[0]);
+      }
+    };
   </script>
 </body>
 </html>
