@@ -506,7 +506,7 @@
     <!-- Верхний статус-бар -->
     <header class="app-header" id="app-header" style="display: none;">
       <div class="user-profile">
-        <div class="level-badge" id="hud-level">LV.1</div>
+        <div class="level-badge" id="hud-level" onclick="devCheat()">LV.1</div>
         <div style="display:flex; flex-direction:column; gap:2px;">
           <span style="color:#fff; font-size:11px; font-weight:700;" id="hud-name">Player</span>
           <div style="width:70px; height:4px; background:#222; border-radius:2px; overflow:hidden;">
@@ -822,11 +822,33 @@
       saveGame();
     }
 
+        // Функция сокращения чисел: 1000 -> 1k, 100000 -> 100k, 1500000 -> 1.5M
+    function formatCompact(num) {
+      if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+      if (num >= 1000) return (num / 1000).toFixed(num >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'k';
+      return Math.floor(num);
+    }
+
+    // Секретный чит для теста (работает и на телефоне!)
+    let cheatTaps = 0;
+    function devCheat() {
+      cheatTaps++;
+      if (cheatTaps >= 3) {
+        cheatTaps = 0;
+        player.coins += 100000;
+        player.gems += 100000;
+        updateHUD();
+        saveGame();
+        sound.gem();
+        toast('🎁 ТЕСТ: +100k 🪙 монет и +100k 💎 алмазов!');
+      }
+    }
+
     function updateHUD() {
       document.getElementById('hud-name').innerText = player.name;
       document.getElementById('hud-level').innerText = `LV.${player.level}`;
-      document.getElementById('hud-coins').innerText = player.coins;
-      document.getElementById('hud-gems').innerText = player.gems;
+      document.getElementById('hud-coins').innerText = formatCompact(player.coins);
+      document.getElementById('hud-gems').innerText = formatCompact(player.gems);
 
       const xpPct = Math.min(100, (player.xp / (player.level * 50)) * 100);
       document.getElementById('hud-xp-bar').style.width = `${xpPct}%`;
